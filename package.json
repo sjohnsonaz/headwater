@@ -1,0 +1,35 @@
+{
+  "name": "dependency-injection",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/scripts/main.js",
+  "typings": "dist/scripts/main.d.ts",
+  "scripts": {
+    "start": "node ./dist/scripts/main.js",
+    "build": "tsc",
+    "clean": "rimraf ./dist",
+    "prepublishOnly": "rimraf ./dist && tsc --declaration",
+    "test": "tsc && node src/mocha/NodeRunner.js",
+    "min": "webpack --config webpack.config.js --progress",
+    "dev": "webpack --config webpack.dev.config.js --progress",
+    "watch": "webpack --config webpack.dev.config.js --watch --progress",
+    "node": "node ./dist/scripts/main.js",
+    "nodemon": "nodemon ./dist/scripts/main.js",
+    "mkdocs": "mkdocs build",
+    "mkdocs-serve": "mkdocs serve",
+    "mkdocs-deploy": "mkdocs gh-deploy"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4.0.10",
+    "@types/mocha": "^2.2.44",
+    "chai": "^4.1.2",
+    "jsdom": "^11.5.1",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.14.7",
+    "rimraf": "^2.6.2",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  }
+}

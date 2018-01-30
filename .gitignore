@@ -1,0 +1,33 @@
+# Dependency directory
+node_modules/
+
+# Documentation directory
+# docs/
+
+# Source directory
+# src/
+
+# Build directory
+dist/
+
+# Sourcemap, log, packed files
+*.map
+*.log
+*.tgz
+
+# Ignore files
+# .gitignore
+# .npmignore
+
+# Build configuration files
+# tsconfig.json
+# webpack.config.js
+# webpack.dev.config.js
+# .travis.yml
+
+# Editor configuration files
+.vscode/
+
+# MkDocs files
+# mkdocs.yml
+site

@@ -1,0 +1,7 @@
+site_name: TS Boilerplate
+site_url: https://sjohnsonaz.github.io/ts-boilerplate
+repo_url: https://github.com/sjohnsonaz/ts-boilerplate
+copyright: Copyright &copy; 2017 Sean Johnson
+pages:
+    - Home: index.md
+theme: readthedocs
