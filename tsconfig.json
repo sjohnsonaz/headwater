@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es5",
+    "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",
     "isolatedModules": false,
@@ -16,7 +16,11 @@
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib":[
+      "dom",
+      "es2017"
+    ]
   },
   "include": [
     "src"
