@@ -1,7 +1,11 @@
 {
-  "name": "dependency-injection",
+  "name": "headwater",
   "version": "0.0.0",
-  "description": "",
+  "description": "dependency injection",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjohnsonaz/headwater"
+  },
   "main": "dist/scripts/main.js",
   "typings": "dist/scripts/main.d.ts",
   "scripts": {
@@ -32,5 +36,13 @@
     "typescript": "2.8.1",
     "webpack": "4.5.0",
     "webpack-cli": "2.0.14"
-  }
+  },
+  "keywords": [
+    "dependency injection",
+    "dependency",
+    "injection",
+    "inversion of control",
+    "ioc",
+    "di"
+  ]
 }
