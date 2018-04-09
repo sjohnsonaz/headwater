@@ -24,7 +24,7 @@ export default class InjectionContext {
         };
     }
 
-    getValue<T>(type: Index): T {
+    getValue<T = any>(type: Index): T {
         let binding = this.bindings[type as any];
         if (!binding) {
             throw 'No binding associated with: ' + type;

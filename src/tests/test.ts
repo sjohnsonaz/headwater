@@ -55,7 +55,7 @@ describe('inject decorator', () => {
         context.bind('Parent', Parent);
         context.bindValue('Factory', Factory.create);
 
-        let factory = context.getValue<IFactory<Parent>>('Factory');
+        let factory: IFactory<Parent> = context.getValue('Factory');
         let parent = factory();
 
         expect(parent.child.a).to.equal('abcd');
