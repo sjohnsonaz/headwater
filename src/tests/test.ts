@@ -4,7 +4,7 @@ import { inject, injectable, InjectionContext } from '../scripts/main';
 
 describe('inject decorator', () => {
     @injectable
-    class Test {
+    class Child {
         a: string;
 
         constructor(@inject('TextValue') a?: string) {
@@ -15,10 +15,10 @@ describe('inject decorator', () => {
     @injectable
     class Parent {
         b: string;
-        child: Test;
+        child: Child;
 
-        constructor(@inject('Test') test?: Test) {
-            this.child = test;
+        constructor(@inject('Child') child?: Child) {
+            this.child = child;
         }
     }
 
@@ -26,15 +26,15 @@ describe('inject decorator', () => {
         let context = InjectionContext.getContext();
         context.bindValue('TextValue', 'abcd');
 
-        let test = new Test();
+        let child = new Child();
 
-        expect(test.a).to.equal('abcd');
+        expect(child.a).to.equal('abcd');
     });
 
     it('should inject classes', () => {
         let context = InjectionContext.getContext();
         context.bindValue('TextValue', 'abcd');
-        context.bind('Test', Test);
+        context.bind('Child', Child);
 
         let parent = new Parent();
 
