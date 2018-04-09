@@ -1,6 +1,4 @@
-import { InjectionBindingType, IConstructor, IFactory } from './InjectionBindingType';
-
-export type Index = string | number | Symbol;
+import { InjectionBindingType, IConstructor, IFactory, Index } from './Types';
 
 export class InjectionBinding {
     bindingType: InjectionBindingType;

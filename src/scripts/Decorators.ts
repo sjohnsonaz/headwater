@@ -1,8 +1,8 @@
 import ParameterInfo from './ParameterInfo';
-
+import { IConstructor, IFactory, Index } from './Types'
 const key = '_injection_params';
 
-export function inject<T>(type: any) {
+export function inject(type: Index) {
     return function (target: any, propertyKey: string, parameterIndex: number): any {
         let obj = target[propertyKey] || target;
         if (!obj[key]) {
@@ -13,7 +13,7 @@ export function inject<T>(type: any) {
     }
 }
 
-export function injectable<T extends new (...args: any[]) => any>(Constructor: T): any {
+export function injectable<T extends IConstructor<any>>(Constructor: T): T {
     return class extends Constructor {
         constructor(...args: any[]) {
             super(...(Constructor[key] ? Constructor[key].getArgs(args) : args));
@@ -21,7 +21,7 @@ export function injectable<T extends new (...args: any[]) => any>(Constructor: T
     }
 }
 
-export function factory<T extends (...args: any[]) => any>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
+export function factory<T extends IFactory<any>>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
     let method = target[propertyKey];
     descriptor.value = function (...args: any[]) {
         return method.call(this, ...(method[key] ? method[key].getArgs(args) : args));
