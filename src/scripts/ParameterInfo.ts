@@ -1,3 +1,5 @@
+import InjectionContext from './InjectionContext';
+
 export default class ParameterInfo {
     highestIndex: number;
     parameters: any[];
@@ -15,13 +17,16 @@ export default class ParameterInfo {
         this.parameters[index] = value;
     }
 
+    getValue(parameter: any) {
+        return InjectionContext.getContext().getValue(parameter);
+    }
+
     getArgs(args: any[]) {
         let output = [];
         let length = Math.max(args.length, this.highestIndex + 1);
         for (let index = 0; index < length; index++) {
-            output[index] = args[index] !== undefined ? args[index] : this.parameters[index];
+            output[index] = args[index] !== undefined ? args[index] : this.getValue(this.parameters[index]);
         }
-        console.log('output:', output);
         return output;
     }
 }

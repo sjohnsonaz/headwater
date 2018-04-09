@@ -1,5 +1,7 @@
 export { default as ParameterInfo } from './ParameterInfo';
 export { inject, injectable } from './Decorators';
+export { default as InjectionContext } from './InjectionContext';
+
 let typeHash: {
     [index: string]: Symbol;
 } = {};

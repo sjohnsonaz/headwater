@@ -2,13 +2,14 @@ import ParameterInfo from './ParameterInfo';
 
 const key = '_injection_params';
 
-export function inject<T>(target: any, propertyKey: string, parameterIndex: number): any {
-    if (!target[key]) {
-        target[key] = new ParameterInfo(parameterIndex, 'abcd');
-    } else {
-        target[key].add(parameterIndex, 'abcd');
+export function inject<T>(type: any) {
+    return function (target: any, propertyKey: string, parameterIndex: number): any {
+        if (!target[key]) {
+            target[key] = new ParameterInfo(parameterIndex, type);
+        } else {
+            target[key].add(parameterIndex, type);
+        }
     }
-    console.log('inject:', target[key]);
 }
 
 export function injectable<T extends new (...args: any[]) => any>(Constructor: T): any {
