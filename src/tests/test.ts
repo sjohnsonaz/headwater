@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { inject, injectable, InjectionContext } from '../scripts/main';
+import { inject, injectable, factory, InjectionContext } from '../scripts/main';
 
 describe('inject decorator', () => {
     @injectable
@@ -22,6 +22,13 @@ describe('inject decorator', () => {
         }
     }
 
+    class Factory {
+        @factory
+        static create(@inject('Parent') parent?: Parent) {
+            return parent;
+        }
+    }
+
     it('should inject constant values', () => {
         let context = InjectionContext.getContext();
         context.bindValue('TextValue', 'abcd');
@@ -37,6 +44,19 @@ describe('inject decorator', () => {
         context.bind('Child', Child);
 
         let parent = new Parent();
+
+        expect(parent.child.a).to.equal('abcd');
+    });
+
+    it('should inject factory functions', () => {
+        let context = InjectionContext.getContext();
+        context.bindValue('TextValue', 'abcd');
+        context.bind('Child', Child);
+        context.bind('Parent', Parent);
+        context.bindValue('Factory', Factory.create);
+
+        let factory: () => Parent = context.getValue('Factory');
+        let parent = factory();
 
         expect(parent.child.a).to.equal('abcd');
     });

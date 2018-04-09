@@ -4,10 +4,11 @@ const key = '_injection_params';
 
 export function inject<T>(type: any) {
     return function (target: any, propertyKey: string, parameterIndex: number): any {
-        if (!target[key]) {
-            target[key] = new ParameterInfo(parameterIndex, type);
+        let obj = target[propertyKey] || target;
+        if (!obj[key]) {
+            obj[key] = new ParameterInfo(parameterIndex, type);
         } else {
-            target[key].add(parameterIndex, type);
+            obj[key].add(parameterIndex, type);
         }
     }
 }
@@ -18,4 +19,11 @@ export function injectable<T extends new (...args: any[]) => any>(Constructor: T
             super(...(Constructor[key] ? Constructor[key].getArgs(args) : args));
         }
     }
+}
+
+export function factory<T extends (...args: any[]) => any>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
+    let method = target[propertyKey];
+    descriptor.value = function (...args: any[]) {
+        return method.call(this, ...(method[key] ? method[key].getArgs(args) : args));
+    } as T;
 }
