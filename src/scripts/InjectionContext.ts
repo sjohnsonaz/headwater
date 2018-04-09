@@ -3,6 +3,10 @@ export enum InjectionBindingType {
     constructor
 }
 
+export type Index = string | number | Symbol;
+
+export type Constructor<T> = new (...args: any[]) => T;
+
 export class InjectionBinding {
     bindingType: InjectionBindingType;
     value: any;
@@ -13,22 +17,22 @@ export default class InjectionContext {
         [index: string]: InjectionBinding;
     } = {};
 
-    bind(type: any, Constructor: new (...args: any[]) => any) {
-        this.bindings[type] = {
+    bind<T>(type: Index, constructor: Constructor<T>) {
+        this.bindings[type as any] = {
             bindingType: InjectionBindingType.constructor,
-            value: Constructor
+            value: constructor
         };
     }
 
-    bindValue(type: any, value: any) {
-        this.bindings[type] = {
+    bindValue<T>(type: Index, value: T) {
+        this.bindings[type as any] = {
             bindingType: InjectionBindingType.value,
             value: value
         };
     }
 
-    getValue(type: any) {
-        let binding = this.bindings[type];
+    getValue<T>(type: Index): T {
+        let binding = this.bindings[type as any];
         if (!binding) {
             throw 'No binding associated with: ' + type;
         }
