@@ -1,11 +1,6 @@
-export enum InjectionBindingType {
-    value,
-    constructor
-}
+import { InjectionBindingType, IConstructor, IFactory } from './InjectionBindingType';
 
 export type Index = string | number | Symbol;
-
-export type Constructor<T> = new (...args: any[]) => T;
 
 export class InjectionBinding {
     bindingType: InjectionBindingType;
@@ -17,7 +12,7 @@ export default class InjectionContext {
         [index: string]: InjectionBinding;
     } = {};
 
-    bind<T>(type: Index, constructor: Constructor<T>) {
+    bind<T>(type: Index, constructor: IConstructor<T>) {
         this.bindings[type as any] = {
             bindingType: InjectionBindingType.constructor,
             value: constructor
