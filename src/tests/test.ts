@@ -22,7 +22,7 @@ describe('inject decorator', () => {
         }
     }
 
-    it('should run per constructor parameter', () => {
+    it('should inject constant values', () => {
         let context = InjectionContext.getContext();
         context.bindValue('TextValue', 'abcd');
 
@@ -31,7 +31,7 @@ describe('inject decorator', () => {
         expect(child.a).to.equal('abcd');
     });
 
-    it('should inject classes', () => {
+    it('should inject class constructors', () => {
         let context = InjectionContext.getContext();
         context.bindValue('TextValue', 'abcd');
         context.bind('Child', Child);
