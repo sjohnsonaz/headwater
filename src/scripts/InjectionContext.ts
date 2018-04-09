@@ -34,18 +34,9 @@ export default class InjectionContext {
         }
         switch (binding.bindingType) {
             case InjectionBindingType.value:
-            return binding.value;
+                return binding.value;
             case InjectionBindingType.constructor:
                 return new binding.value();
         }
     }
-
-    static getContext() {
-        if (!context) {
-            context = new InjectionContext();
-        }
-        return context;
-    }
 }
-
-let context: InjectionContext;

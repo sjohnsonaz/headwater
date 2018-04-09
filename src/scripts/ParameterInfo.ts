@@ -1,4 +1,4 @@
-import InjectionContext from './InjectionContext';
+import Injector from './Injector';
 
 export default class ParameterInfo {
     highestIndex: number;
@@ -18,7 +18,7 @@ export default class ParameterInfo {
     }
 
     getValue(parameter: any) {
-        return InjectionContext.getContext().getValue(parameter);
+        return Injector.getContext().getValue(parameter);
     }
 
     getArgs(args: any[]) {
