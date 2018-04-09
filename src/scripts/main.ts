@@ -1,11 +1,5 @@
-export function run() {
-    return 'Application started...';
-}
-
-window.onload = function () {
-    console.log(run());
-}
-
+export { default as ParameterInfo } from './ParameterInfo';
+export { inject, injectable } from './Decorators';
 let typeHash: {
     [index: string]: Symbol;
 } = {};
@@ -28,3 +22,5 @@ class Injector {
         [index: string]: Symbol;
     } = {};
 }
+
+

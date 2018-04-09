@@ -1,24 +1,17 @@
 import { expect } from 'chai';
 
-import { run } from '../scripts/main';
+import { inject, injectable } from '../scripts/main';
 
-describe('run', () => {
-    it('should return "Application started..."', () => {
-        expect(run()).to.equal('Application started...');
-    });
-});
+describe('inject decorator', () => {
+    it('should run per constructor parameter', () => {
+        @injectable
+        class Test {
+            constructor(@inject a?: string) {
+                console.log('constructor:', a);
 
-describe('Dom', () => {
-    it('should have window', () => {
-        expect(window).to.not.be.undefined;
-    });
+            }
+        }
 
-    it('should have document', () => {
-        expect(document).to.not.be.undefined;
-    });
-
-    it('should have document.createElement', () => {
-        var element = document.createElement('div');
-        expect(element.tagName.toLowerCase()).to.equal('div');
+        let test = new Test();
     });
 });
