@@ -1,7 +1,7 @@
 {
   "name": "headwater",
   "version": "0.0.0",
-  "description": "dependency injection",
+  "description": "Dependency Injection for TypeScript",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjohnsonaz/headwater"
