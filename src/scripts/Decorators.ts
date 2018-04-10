@@ -14,11 +14,9 @@ export function inject(type: Index) {
 }
 
 export function injectable<T extends IConstructor<any>>(Constructor: T): T {
-    return class extends Constructor {
-        constructor(...args: any[]) {
-            super(...(Constructor[key] ? Constructor[key].getArgs(args) : args));
-        }
-    }
+    return function (...args: any[]) {
+        return Reflect.construct(Constructor, Constructor[key] ? Constructor[key].getArgs(args) : args);
+    } as any;
 }
 
 export function factory<T extends IFactory<any>>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {

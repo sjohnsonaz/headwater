@@ -69,4 +69,13 @@ describe('inject decorator', () => {
 
         expect(parent.child.a).to.equal('abcd');
     });
+
+    it('should not change class names', () => {
+        let context = Injector.getContext();
+        context.bindValue('TextValue', 'abcd');
+
+        let child = (Child as any)();
+
+        expect(child.constructor.name).to.equal('Child');
+    });
 });
