@@ -14,10 +14,18 @@ export function inject(type: Index) {
 }
 
 export function injectable<T extends IConstructor<any>>(Constructor: T): T {
+    // Create Wrapper function
     let Wrapper = function (...args: any[]) {
         return Reflect.construct(Constructor, Constructor[key] ? Constructor[key].getArgs(args) : args);
     };
 
+    // Change Wrapper name to match Constructor
+    Object.defineProperty(Wrapper, 'name', {
+        value: Constructor.name
+    });
+
+    // Copy Constructor prototype to mask Wrapper
+    // This is not used by the instances
     Wrapper.prototype = Object.create(Constructor.prototype, {
         constructor: {
             value: Constructor,
@@ -26,9 +34,10 @@ export function injectable<T extends IConstructor<any>>(Constructor: T): T {
         }
     });
 
-    Object.values(Constructor).forEach(value => {
-        Wrapper[value] = Constructor[value]
-    });
+    // Copy static members (including static prototype)
+    for (var index in Constructor) {
+        Wrapper[index as any] = Constructor[index];
+    }
 
     return Wrapper as any;
 }
