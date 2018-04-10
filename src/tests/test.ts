@@ -2,6 +2,31 @@ import { expect } from 'chai';
 
 import Injector, { inject, injectable, factory, IFactory } from '../scripts/main';
 
+describe('injectable decorator', () => {
+    @injectable
+    class Child {
+        a: string;
+        static staticString: string = 'staticString';
+
+        constructor(@inject('TextValue') a?: string) {
+            this.a = a;
+        }
+    }
+
+    it('should maintain class names', () => {
+        let context = Injector.getContext();
+        context.bindValue('TextValue', 'abcd');
+
+        let child = new Child();
+
+        expect(child.constructor.name).to.equal('Child');
+    });
+
+    it('should maintain static members', () => {
+        expect(Child.staticString).to.equal('staticString');
+    });
+});
+
 describe('inject decorator', () => {
     interface IChild {
         a: string;
@@ -15,6 +40,7 @@ describe('inject decorator', () => {
     @injectable
     class Child implements IChild {
         a: string;
+        static staticString: string = 'staticString';
 
         constructor(@inject('TextValue') a?: string) {
             this.a = a;
@@ -68,14 +94,5 @@ describe('inject decorator', () => {
         let parent = factory();
 
         expect(parent.child.a).to.equal('abcd');
-    });
-
-    it('should not change class names', () => {
-        let context = Injector.getContext();
-        context.bindValue('TextValue', 'abcd');
-
-        let child = (Child as any)();
-
-        expect(child.constructor.name).to.equal('Child');
     });
 });

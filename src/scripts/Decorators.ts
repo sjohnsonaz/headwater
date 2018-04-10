@@ -14,9 +14,23 @@ export function inject(type: Index) {
 }
 
 export function injectable<T extends IConstructor<any>>(Constructor: T): T {
-    return function (...args: any[]) {
+    let Wrapper = function (...args: any[]) {
         return Reflect.construct(Constructor, Constructor[key] ? Constructor[key].getArgs(args) : args);
-    } as any;
+    };
+
+    Wrapper.prototype = Object.create(Constructor.prototype, {
+        constructor: {
+            value: Constructor,
+            writable: true,
+            enumerable: true
+        }
+    });
+
+    Object.values(Constructor).forEach(value => {
+        Wrapper[value] = Constructor[value]
+    });
+
+    return Wrapper as any;
 }
 
 export function factory<T extends IFactory<any>>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
