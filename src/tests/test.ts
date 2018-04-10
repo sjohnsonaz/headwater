@@ -3,8 +3,17 @@ import { expect } from 'chai';
 import Injector, { inject, injectable, factory, IFactory } from '../scripts/main';
 
 describe('inject decorator', () => {
+    interface IChild {
+        a: string;
+    }
+
+    interface IParent {
+        b: string;
+        child: IChild;
+    }
+
     @injectable
-    class Child {
+    class Child implements IChild {
         a: string;
 
         constructor(@inject('TextValue') a?: string) {
@@ -13,7 +22,7 @@ describe('inject decorator', () => {
     }
 
     @injectable
-    class Parent {
+    class Parent implements IParent {
         b: string;
         child: Child;
 
@@ -41,7 +50,7 @@ describe('inject decorator', () => {
     it('should inject class constructors', () => {
         let context = Injector.getContext();
         context.bindValue('TextValue', 'abcd');
-        context.bind('Child', Child);
+        context.bind<IChild>('Child', Child);
 
         let parent = new Parent();
 
@@ -51,8 +60,8 @@ describe('inject decorator', () => {
     it('should inject factory functions', () => {
         let context = Injector.getContext();
         context.bindValue('TextValue', 'abcd');
-        context.bind('Child', Child);
-        context.bind('Parent', Parent);
+        context.bind<IChild>('Child', Child);
+        context.bind<IParent>('Parent', Parent);
         context.bindValue('Factory', Factory.create);
 
         let factory: IFactory<Parent> = context.getValue('Factory');
