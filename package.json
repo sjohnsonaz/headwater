@@ -1,6 +1,6 @@
 {
   "name": "headwater",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Dependency Injection for TypeScript",
   "repository": {
     "type": "git",
