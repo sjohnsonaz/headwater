@@ -1,3 +1,4 @@
+import ParameterInfo from './ParameterInfo';
 import { InjectionBindingType, IConstructor, IFactory, Index } from './Types';
 
 export class InjectionBinding {
@@ -33,11 +34,11 @@ export default class InjectionContext {
             case InjectionBindingType.value:
                 return binding.value;
             case InjectionBindingType.constructor:
-                return new binding.value();
+                return InjectionContext.inject(binding.value);
         }
     }
 
-    inject<T>(constructor: IConstructor<T>): T {
-
+    static inject<T>(constructor: IConstructor<T>): T {
+        return new constructor(...ParameterInfo.getArgs(constructor));
     }
 }

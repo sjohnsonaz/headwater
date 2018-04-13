@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
+    mode: 'production',
     entry: {
         'main': './src/scripts/main.ts'
     },
@@ -17,9 +18,9 @@ module.exports = {
         chai: 'chai'
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader'
+            use: ['ts-loader']
         }]
     },
     plugins: [

@@ -1,5 +1,6 @@
 import InjectionContext from './InjectionContext';
-
+import ParameterInfo from './ParameterInfo';
+import { IConstructor } from './Types';
 let context: InjectionContext;
 
 export default class Injector {
@@ -19,7 +20,7 @@ export default class Injector {
         context = _context;
     }
 
-    static inject<T>(Constructor: IConstructor<T>, context: InjectionContext) {
-        
+    static inject<T>(Constructor: IConstructor<T>) {
+        return new Constructor(...ParameterInfo.getArgs(Constructor));
     }
 }
