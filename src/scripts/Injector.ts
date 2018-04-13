@@ -18,4 +18,8 @@ export default class Injector {
     static setContext(_context: InjectionContext) {
         context = _context;
     }
+
+    static inject<T>(Constructor: IConstructor<T>, context: InjectionContext) {
+        
+    }
 }

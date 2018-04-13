@@ -36,4 +36,8 @@ export default class InjectionContext {
                 return new binding.value();
         }
     }
+
+    inject<T>(constructor: IConstructor<T>): T {
+
+    }
 }
