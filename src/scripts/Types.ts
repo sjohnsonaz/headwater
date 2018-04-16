@@ -1,7 +1,9 @@
 export enum InjectionBindingType {
-    value,
-    constructor
+    value = 'value',
+    constructor = 'constructor',
+    factory = 'factory'
 }
+
 export type Index = string | number | Symbol;
 
 export type IConstructor<T> = new (...args: any[]) => T;

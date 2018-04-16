@@ -8,18 +8,18 @@ export function inject(type: Index) {
 }
 
 export function injectable<T extends IConstructor<any>>(Constructor: T): T {
-    class Wrapper extends Constructor {
+    class Injected extends Constructor {
         constructor(...args: any[]) {
             super(...ParameterInfo.getArgs(Constructor, args));
         }
     }
 
     // Change Wrapper name to match Constructor
-    Object.defineProperty(Wrapper, 'name', {
+    Object.defineProperty(Injected, 'name', {
         value: Constructor.name
     });
 
-    return Wrapper;
+    return Injected;
 }
 
 export function factory<T extends IFactory<any>>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {

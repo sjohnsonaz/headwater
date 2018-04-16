@@ -41,4 +41,8 @@ export default class InjectionContext {
     static inject<T>(constructor: IConstructor<T>): T {
         return new constructor(...ParameterInfo.getArgs(constructor));
     }
+
+    static injectFunction<T>(func: Function): T {
+        return func(...ParameterInfo.getArgs(func));
+    }
 }
