@@ -35,6 +35,8 @@ export default class InjectionContext {
                 return binding.value;
             case InjectionBindingType.constructor:
                 return InjectionContext.inject(binding.value);
+            case InjectionBindingType.factory:
+                return InjectionContext.injectFunction(binding.value);
         }
     }
 
