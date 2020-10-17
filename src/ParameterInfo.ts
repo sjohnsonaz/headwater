@@ -1,10 +1,10 @@
-import Injector from './Injector';
+import { Injector } from './Injector';
 import { Index } from './Types';
 
 const key = '_injection_params';
 const emptyArray: any[] = [];
 
-export default class ParameterInfo {
+export class ParameterInfo {
     highestIndex: number;
     parameters: any[];
 

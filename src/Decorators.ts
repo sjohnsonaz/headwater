@@ -1,4 +1,4 @@
-import ParameterInfo from './ParameterInfo';
+import { ParameterInfo } from './ParameterInfo';
 import { IConstructor, IFactory, Index } from './Types'
 
 export function inject(type: Index) {

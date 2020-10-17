@@ -1,5 +1,5 @@
 import { factory, inject, injectable } from "./Decorators";
-import Injector from "./Injector";
+import { Injector } from "./Injector";
 import { IFactory } from "./Types";
 
 describe('inject decorator', () => {

@@ -1,4 +1,4 @@
-import ParameterInfo from './ParameterInfo';
+import { ParameterInfo } from './ParameterInfo';
 import { InjectionBindingType, IConstructor, IFactory, Index } from './Types';
 
 export interface InjectionBinding {
@@ -6,7 +6,7 @@ export interface InjectionBinding {
     value: any;
 }
 
-export default class InjectionContext {
+export class InjectionContext {
     bindings: {
         [index: string]: InjectionBinding;
     } = {};

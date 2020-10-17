@@ -1,5 +1,5 @@
 import { inject, injectable } from "./Decorators";
-import Injector from "./Injector";
+import { Injector } from "./Injector";
 
 describe('injectable decorator', () => {
     class Base {

@@ -1,9 +1,10 @@
-import InjectionContext from './InjectionContext';
-import ParameterInfo from './ParameterInfo';
+import { InjectionContext } from './InjectionContext';
+import { ParameterInfo } from './ParameterInfo';
 import { IConstructor } from './Types';
+
 let context: InjectionContext;
 
-export default class Injector {
+export class Injector {
     static createContext() {
         context = new InjectionContext();
         return context;
