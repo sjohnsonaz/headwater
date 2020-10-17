@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import Injector, { inject, injectable, IFactory } from '../scripts/main';
 
 describe('injectable decorator', () => {
@@ -19,16 +17,16 @@ describe('injectable decorator', () => {
 
         constructor(@inject('TextValue') a?: string) {
             super();
-            this.a = a;
+            this.a = a as any;
         }
     }
 
     it('should maintain constructor names', () => {
-        expect(Child.name).to.equal('Child');
+        expect(Child.name).toBe('Child');
     });
 
     it('should maintain constructor prototype', () => {
-        expect(Child.prototype.method).to.be.instanceof(Function);
+        expect(Child.prototype.method).toBeInstanceOf(Function);
     });
 
     it('should maintain class names', () => {
@@ -37,14 +35,14 @@ describe('injectable decorator', () => {
 
         let child = new Child();
 
-        expect(child.constructor.name).to.equal('Child');
+        expect(child.constructor.name).toBe('Child');
     });
 
     it('should maintain static members', () => {
-        expect(Child.staticString).to.equal('staticString');
+        expect(Child.staticString).toBe('staticString');
     });
 
     it('should maintain inherited static members', () => {
-        expect(Child.staticBaseString).to.equal('staticBaseString');
+        expect(Child.staticBaseString).toBe('staticBaseString');
     });
 });

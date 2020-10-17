@@ -2,19 +2,19 @@ import Injector from './Injector';
 import { Index } from './Types';
 
 const key = '_injection_params';
-const emptyArray = [];
+const emptyArray: any[] = [];
 
 export default class ParameterInfo {
     highestIndex: number;
     parameters: any[];
 
-    constructor(index, value) {
+    constructor(index: number, value: any) {
         this.highestIndex = index || 0;
         this.parameters = [];
         this.parameters[index] = value;
     }
 
-    add(index, value) {
+    add(index: number, value: any) {
         if (this.highestIndex < index) {
             this.highestIndex = index;
         }
@@ -44,7 +44,7 @@ export default class ParameterInfo {
         return target[key] as ParameterInfo;
     }
 
-    static getArgs(target: any, args?: any[], propertyKey?: string) {
+    static getArgs(target: any, args: any[] = [], propertyKey?: string) {
         let method = propertyKey ? target[propertyKey] : target;
         let parameterInfo: ParameterInfo = method[key];
         return parameterInfo ? parameterInfo.getArgs(args) : args;

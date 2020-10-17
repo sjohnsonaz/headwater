@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import Injector, { inject, injectable, factory, IFactory } from '../scripts/main';
 
 describe('inject decorator', () => {
@@ -8,7 +6,6 @@ describe('inject decorator', () => {
     }
 
     interface IParent {
-        b: string;
         child: IChild;
     }
 
@@ -18,17 +15,16 @@ describe('inject decorator', () => {
         static staticString: string = 'staticString';
 
         constructor(@inject('TextValue') a?: string) {
-            this.a = a;
+            this.a = a as any;
         }
     }
 
     @injectable
     class Parent implements IParent {
-        b: string;
         child: Child;
 
         constructor(@inject('Child') child?: Child) {
-            this.child = child;
+            this.child = child as any;
         }
     }
 
@@ -45,7 +41,7 @@ describe('inject decorator', () => {
 
         let child = new Child();
 
-        expect(child.a).to.equal('abcd');
+        expect(child.a).toBe('abcd');
     });
 
     it('should inject class constructors', () => {
@@ -55,7 +51,7 @@ describe('inject decorator', () => {
 
         let parent = new Parent();
 
-        expect(parent.child.a).to.equal('abcd');
+        expect(parent.child.a).toBe('abcd');
     });
 
     it('should inject factory functions', () => {
@@ -68,6 +64,6 @@ describe('inject decorator', () => {
         let factory: IFactory<Parent> = context.getValue('Factory');
         let parent = factory();
 
-        expect(parent.child.a).to.equal('abcd');
+        expect(parent.child.a).toBe('abcd');
     });
 });

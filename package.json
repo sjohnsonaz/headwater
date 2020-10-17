@@ -13,29 +13,16 @@
     "build": "tsc",
     "clean": "rimraf ./dist",
     "prepublishOnly": "rimraf ./dist && tsc --declaration",
-    "test": "tsc && node src/mocha/NodeRunner.js",
-    "min": "webpack --config webpack.config.js --progress",
-    "dev": "webpack --config webpack.dev.config.js --progress",
-    "watch": "webpack --config webpack.dev.config.js --watch --progress",
-    "node": "node ./dist/scripts/main.js",
-    "nodemon": "nodemon ./dist/scripts/main.js",
-    "mkdocs": "mkdocs build",
-    "mkdocs-serve": "mkdocs serve",
-    "mkdocs-deploy": "mkdocs gh-deploy"
+    "test": "jest --verbose --coverage",
+    "node": "node ./dist/scripts/main.js"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/chai": "4.1.6",
-    "@types/mocha": "5.2.5",
-    "chai": "4.2.0",
-    "jsdom": "11.11.0",
-    "mocha": "5.2.0",
-    "nodemon": "1.18.5",
-    "rimraf": "2.6.2",
-    "ts-loader": "5.2.2",
-    "typescript": "3.1.3",
-    "webpack": "4.23.1",
-    "webpack-cli": "3.1.2"
+    "@types/jest": "26.0.14",
+    "jest": "26.5.3",
+    "rimraf": "3.0.2",
+    "ts-jest": "26.4.1",
+    "typescript": "4.0.3"
   },
   "keywords": [
     "dependency injection",
@@ -44,5 +31,11 @@
     "inversion of control",
     "ioc",
     "di"
-  ]
+  ],
+  "jest": {
+    "preset": "ts-jest",
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
+  }
 }

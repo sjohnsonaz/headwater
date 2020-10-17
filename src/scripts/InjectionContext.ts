@@ -1,7 +1,7 @@
 import ParameterInfo from './ParameterInfo';
 import { InjectionBindingType, IConstructor, IFactory, Index } from './Types';
 
-export class InjectionBinding {
+export interface InjectionBinding {
     bindingType: InjectionBindingType;
     value: any;
 }
