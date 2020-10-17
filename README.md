@@ -1,6 +1,6 @@
 # Headwater
 
-[![Build Status](https://travis-ci.org/sjohnsonaz/headwater.svg?branch=master)](https://travis-ci.org/sjohnsonaz/headwater) [![npm version](https://badge.fury.io/js/headwater.svg)](https://badge.fury.io/js/headwater)
+![Node.js CI](https://github.com/sjohnsonaz/headwater/workflows/Node.js%20CI/badge.svg) [![npm version](https://badge.fury.io/js/headwater.svg)](https://badge.fury.io/js/headwater)
 
 Dependency Injection for TypeScript
 
