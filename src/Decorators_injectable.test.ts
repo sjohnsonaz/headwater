@@ -1,4 +1,5 @@
-import Injector, { inject, injectable, IFactory } from '../scripts/main';
+import { inject, injectable } from "./Decorators";
+import Injector from "./Injector";
 
 describe('injectable decorator', () => {
     class Base {

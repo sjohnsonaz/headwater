@@ -1,4 +1,6 @@
-import Injector, { inject, injectable, factory, IFactory } from '../scripts/main';
+import { factory, inject, injectable } from "./Decorators";
+import Injector from "./Injector";
+import { IFactory } from "./Types";
 
 describe('inject decorator', () => {
     interface IChild {
