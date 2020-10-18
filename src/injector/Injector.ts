@@ -2,26 +2,26 @@ import { InjectionContext } from './InjectionContext';
 import { ParameterInfo } from './ParameterInfo';
 import { IConstructor } from './Types';
 
-let context: InjectionContext;
+export namespace Injector {
+    let context: InjectionContext;
 
-export class Injector {
-    static createContext() {
+    function createContext() {
         context = new InjectionContext();
         return context;
     }
 
-    static getContext() {
+    export function getContext() {
         if (!context) {
-            Injector.createContext();
+            createContext();
         }
         return context;
     }
 
-    static setContext(_context: InjectionContext) {
+    export function setContext(_context: InjectionContext) {
         context = _context;
     }
 
-    static inject<T>(Constructor: IConstructor<T>) {
+    export function inject<T>(Constructor: IConstructor<T>) {
         return new Constructor(...ParameterInfo.getArgs(Constructor));
     }
 }
