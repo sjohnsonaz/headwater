@@ -1,4 +1,4 @@
-import { InjectionContext } from './InjectionContext';
+import { Container } from './Container';
 import { Injector } from './Injector';
 import { Index } from './Types';
 
@@ -15,11 +15,11 @@ export class ParameterInfo {
         this.parameters[index] = type;
     }
 
-    getValue(type: Index, context: InjectionContext = Injector.getContext()) {
+    getValue(type: Index, context: Container = Injector.getContainer()) {
         return context.getValue(type);
     }
 
-    getArgs(args?: any[], context: InjectionContext = Injector.getContext()) {
+    getArgs(args?: any[], context: Container = Injector.getContainer()) {
         const output = [];
         if (args) {
             const length = Math.max(args.length, this.highestIndex + 1);
@@ -45,12 +45,12 @@ export class ParameterInfo {
         return parameterInfo ? parameterInfo.getArgs(args) : args;
     }
 
-    static getParameterInfo(target: any) {
+    private static getParameterInfo(target: any) {
         const parameterInfo: ParameterInfo | undefined = target[INJECTION_PARAMS];
         return parameterInfo;
     }
 
-    static getOrCreateParameterInfo(target: any) {
+    private static getOrCreateParameterInfo(target: any) {
         let parameterInfo: ParameterInfo = target[INJECTION_PARAMS];
         if (!parameterInfo) {
             parameterInfo = new ParameterInfo();

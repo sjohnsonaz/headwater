@@ -7,20 +7,20 @@ export function inject(type: Index) {
     }
 }
 
-export function injectable<T extends IConstructor<any>>(Constructor: T): T {
-    class Injected extends Constructor {
-        constructor(...args: any[]) {
-            super(...ParameterInfo.getArgs(Constructor, args));
-        }
-    }
+// export function injectable<T extends IConstructor<any>>(Constructor: T): T {
+//     class Injected extends Constructor {
+//         constructor(...args: any[]) {
+//             super(...ParameterInfo.getArgs(Constructor, args));
+//         }
+//     }
 
-    // Change Wrapper name to match Constructor
-    Object.defineProperty(Injected, 'name', {
-        value: Constructor.name
-    });
+//     // Change Wrapper name to match Constructor
+//     Object.defineProperty(Injected, 'name', {
+//         value: Constructor.name
+//     });
 
-    return Injected;
-}
+//     return Injected;
+// }
 
 export function factory<T extends IFactory<any>>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
     let method = target[propertyKey];

@@ -1,27 +1,31 @@
-import { InjectionContext } from './InjectionContext';
+import { Container } from './Container';
 import { ParameterInfo } from './ParameterInfo';
-import { IConstructor } from './Types';
+import { IConstructor, IFactory } from './Types';
 
 export namespace Injector {
-    let context: InjectionContext;
+    let context: Container;
 
-    function createContext() {
-        context = new InjectionContext();
+    function createContainer() {
+        context = new Container();
         return context;
     }
 
-    export function getContext() {
+    export function getContainer() {
         if (!context) {
-            createContext();
+            createContainer();
         }
         return context;
     }
 
-    export function setContext(_context: InjectionContext) {
+    export function setContext(_context: Container) {
         context = _context;
     }
 
-    export function inject<T>(Constructor: IConstructor<T>) {
+    export function inject<T>(factory: IFactory<T>) {
+        return factory(...ParameterInfo.getArgs(factory));
+    }
+
+    export function create<T>(Constructor: IConstructor<T>) {
         return new Constructor(...ParameterInfo.getArgs(Constructor));
     }
 }

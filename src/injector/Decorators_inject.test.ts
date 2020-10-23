@@ -1,5 +1,5 @@
-import { factory, inject, injectable } from "./Decorators";
-import { Injector } from ".";
+import { factory, inject } from "./Decorators";
+import { Injector } from "./Injector";
 import { IFactory } from "./Types";
 
 describe('inject decorator', () => {
@@ -11,7 +11,6 @@ describe('inject decorator', () => {
         child: IChild;
     }
 
-    @injectable
     class Child implements IChild {
         a: string;
         static staticString: string = 'staticString';
@@ -21,7 +20,6 @@ describe('inject decorator', () => {
         }
     }
 
-    @injectable
     class Parent implements IParent {
         child: Child;
 
@@ -38,29 +36,29 @@ describe('inject decorator', () => {
     }
 
     it('should inject constant values', () => {
-        let context = Injector.getContext();
+        let context = Injector.getContainer();
         context.bindValue('TextValue', 'abcd');
 
-        let child = new Child();
+        let child = Injector.create(Child);
 
         expect(child.a).toBe('abcd');
     });
 
     it('should inject class constructors', () => {
-        let context = Injector.getContext();
+        let context = Injector.getContainer();
         context.bindValue('TextValue', 'abcd');
-        context.bind<IChild>('Child', Child);
+        context.bindConstructor<IChild>('Child', Child);
 
-        let parent = new Parent();
+        let parent = Injector.create(Parent);
 
         expect(parent.child.a).toBe('abcd');
     });
 
     it('should inject factory functions', () => {
-        let context = Injector.getContext();
+        let context = Injector.getContainer();
         context.bindValue('TextValue', 'abcd');
-        context.bind<IChild>('Child', Child);
-        context.bind<IParent>('Parent', Parent);
+        context.bindConstructor<IChild>('Child', Child);
+        context.bindConstructor<IParent>('Parent', Parent);
         context.bindValue('Factory', Factory.create);
 
         let factory: IFactory<Parent> = context.getValue('Factory');
