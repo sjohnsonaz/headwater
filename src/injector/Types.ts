@@ -6,6 +6,6 @@ export enum InjectionBindingType {
 
 export type Index = string | number | Symbol;
 
-export type IConstructor<T> = new (...args: any[]) => T;
+export type IConstructor<T> = new (...args: any) => T;
 
-export type IFactory<T> = (...args: any[]) => T;
+export type IFactory<T> = (...args: any) => T;
