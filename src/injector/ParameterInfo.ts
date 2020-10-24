@@ -15,20 +15,18 @@ export class ParameterInfo {
         this.parameters[index] = type;
     }
 
-    getValue(type: Index, context: Container = Injector.getContainer()) {
-        return context.getValue(type);
+    getValue<T>(type: Index, container: Container = Injector.getContainer()) {
+        return container.getValue<T>(type);
     }
 
-    getArgs(args?: any[], context: Container = Injector.getContainer()) {
+    getArgs(args: any[] = [], container: Container = Injector.getContainer()) {
         const output = [];
-        if (args) {
-            const length = Math.max(args.length, this.highestIndex + 1);
-            for (let index = 0; index < length; index++) {
-                const value = args[index];
-                output[index] = value !== undefined ?
-                    value :
-                    this.getValue(this.parameters[index], context);
-            }
+        const length = Math.max(args.length, this.highestIndex + 1);
+        for (let index = 0; index < length; index++) {
+            const value = args[index];
+            output[index] = value !== undefined ?
+                value :
+                this.getValue(this.parameters[index], container);
         }
         return output;
     }
@@ -39,10 +37,15 @@ export class ParameterInfo {
         return parameterInfo;
     }
 
-    static getArgs<T>(target: T, args: any[] = [], propertyKey?: keyof T) {
+    static getArgs<T>(target: T, args: any[] = [], container: Container = Injector.getContainer()) {
+        const parameterInfo = this.getParameterInfo(target);
+        return parameterInfo ? parameterInfo.getArgs(args, container) : args;
+    }
+
+    static getPropertyArgs<T>(target: T, args: any[] = [], propertyKey: keyof T, container: Container = Injector.getContainer()) {
         const method = propertyKey ? target[propertyKey] : target;
         const parameterInfo = this.getParameterInfo(method);
-        return parameterInfo ? parameterInfo.getArgs(args) : args;
+        return parameterInfo ? parameterInfo.getArgs(args, container) : args;
     }
 
     private static getParameterInfo(target: any) {

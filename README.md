@@ -41,18 +41,18 @@ class Factory {
 ```` TypeScript
 import Headwater from 'headwater';
 
-// Get a context
-let context = Headwater.getContext();
+// Get a container
+let container = Headwater.getContainer();
 
 // Bind a static value
-context.bindValue('TextValue', 'abcd');
+container.bindValue('TextValue', 'abcd');
 
 // Bind constructors
-context.bind('Child', Child);
-context.bind('Parent', Parent);
+container.bind('Child', Child);
+container.bind('Parent', Parent);
 
 // Bind a factory
-context.bindValue('Factory', Factory.create);
+container.bindValue('Factory', Factory.create);
 ````
 
 ## Create Instances
@@ -69,9 +69,9 @@ You can create a parent directly, and the child will be created automatically.
 let parent = new Parent();
 ````
 
-You can create a factory directly, or get it from the context.  Any instances will be created automatically.
+You can create a factory directly, or get it from the container.  Any instances will be created automatically.
 
 ```` TypeScript
-let factory: IFactory<Parent> = context.getValue('Factory');
+let factory: IFactory<Parent> = container.getValue('Factory');
 let parent = factory();
 ````

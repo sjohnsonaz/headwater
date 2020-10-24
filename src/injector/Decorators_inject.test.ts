@@ -36,8 +36,8 @@ describe('inject decorator', () => {
     }
 
     it('should inject constant values', () => {
-        let context = Injector.getContainer();
-        context.bindValue('TextValue', 'abcd');
+        let container = Injector.getContainer();
+        container.bindValue('TextValue', 'abcd');
 
         let child = Injector.create(Child);
 
@@ -45,9 +45,9 @@ describe('inject decorator', () => {
     });
 
     it('should inject class constructors', () => {
-        let context = Injector.getContainer();
-        context.bindValue('TextValue', 'abcd');
-        context.bindConstructor<IChild>('Child', Child);
+        let container = Injector.getContainer();
+        container.bindValue('TextValue', 'abcd');
+        container.bindConstructor<IChild>('Child', Child);
 
         let parent = Injector.create(Parent);
 
@@ -55,13 +55,13 @@ describe('inject decorator', () => {
     });
 
     it('should inject factory functions', () => {
-        let context = Injector.getContainer();
-        context.bindValue('TextValue', 'abcd');
-        context.bindConstructor<IChild>('Child', Child);
-        context.bindConstructor<IParent>('Parent', Parent);
-        context.bindValue('Factory', Factory.create);
+        let container = Injector.getContainer();
+        container.bindValue('TextValue', 'abcd');
+        container.bindConstructor<IChild>('Child', Child);
+        container.bindConstructor<IParent>('Parent', Parent);
+        container.bindValue('Factory', Factory.create);
 
-        let factory: IFactory<Parent> = context.getValue('Factory');
+        let factory: IFactory<Parent> = container.getValue('Factory');
         let parent = factory();
 
         expect(parent.child.a).toBe('abcd');

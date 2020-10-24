@@ -3,22 +3,22 @@ import { ParameterInfo } from './ParameterInfo';
 import { IConstructor, IFactory } from './Types';
 
 export namespace Injector {
-    let context: Container;
+    let container: Container;
 
     function createContainer() {
-        context = new Container();
-        return context;
+        container = new Container();
+        return container;
     }
 
     export function getContainer() {
-        if (!context) {
+        if (!container) {
             createContainer();
         }
-        return context;
+        return container;
     }
 
-    export function setContext(_context: Container) {
-        context = _context;
+    export function setContainer(_container: Container) {
+        container = _container;
     }
 
     export function inject<T>(factory: IFactory<T>) {
