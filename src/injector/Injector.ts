@@ -5,7 +5,7 @@ import { IConstructor, IFactory } from './Types';
 export namespace Injector {
     let container: Container;
 
-    function createContainer() {
+    export function createContainer() {
         container = new Container();
         return container;
     }
@@ -21,11 +21,11 @@ export namespace Injector {
         container = _container;
     }
 
-    export function inject<T>(factory: IFactory<T>) {
-        return factory(...ParameterInfo.getArgs(factory));
+    export function inject<T>(factory: IFactory<T>, container?: Container) {
+        return factory(...ParameterInfo.getArgs(factory, undefined, container));
     }
 
-    export function create<T>(Constructor: IConstructor<T>) {
-        return new Constructor(...ParameterInfo.getArgs(Constructor));
+    export function create<T>(Constructor: IConstructor<T>, container?: Container) {
+        return new Constructor(...ParameterInfo.getArgs(Constructor, undefined, container));
     }
 }
