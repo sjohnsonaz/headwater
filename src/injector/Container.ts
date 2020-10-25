@@ -1,4 +1,3 @@
-import { ParameterInfo } from './ParameterInfo';
 import { IConstructor, IFactory, Index } from './Types';
 
 export enum InjectionBindingType {
@@ -36,7 +35,7 @@ export class Container {
         };
     }
 
-    getValue<T = any>(type: Index): T {
+    get<T = any>(type: Index, ...args: any): T {
         let binding = this.bindings[type as any];
         if (!binding) {
             throw `No binding associated with: ${type.toString()}`;
@@ -45,11 +44,9 @@ export class Container {
             case InjectionBindingType.value:
                 return binding.value;
             case InjectionBindingType.constructor:
-                return new binding.value(...ParameterInfo.getArgs(binding.value));
+                return new binding.value(...args);
             case InjectionBindingType.factory:
-                return binding.value(...ParameterInfo.getArgs(binding.value));
-            default:
-                return binding.value;
+                return binding.value(...args);
         }
     }
 }

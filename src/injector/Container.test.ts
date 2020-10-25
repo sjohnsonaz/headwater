@@ -53,12 +53,20 @@ describe('Container', function () {
     });
 
     describe('getValue', function () {
+        it('should throw when no binding is found', function () {
+            const container = new Container();
+            const type = 'type';
+            expect(function () {
+                container.get(type);
+            }).toThrow();
+        });
+
         it('should get a value', function () {
             const container = new Container();
             const type = 'type';
             const value = 'value';
             container.bindValue(type, value);
-            const result: string = container.getValue(type);
+            const result: string = container.get(type);
             expect(result).toBe(value);
         });
 
@@ -67,7 +75,7 @@ describe('Container', function () {
             const type = 'type';
             class Test { }
             container.bindConstructor(type, Test);
-            const result: Test = container.getValue(type);
+            const result: Test = container.get(type);
             expect(result).toBeInstanceOf(Test);
         });
 
@@ -79,7 +87,7 @@ describe('Container', function () {
                 return new Test();
             }
             container.bindFactory(type, factory);
-            const result: Test = container.getValue(type);
+            const result: Test = container.get(type);
             expect(result).toBeInstanceOf(Test);
         });
     });

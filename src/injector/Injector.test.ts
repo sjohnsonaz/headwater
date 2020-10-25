@@ -2,6 +2,14 @@ import { Container } from "./Container";
 import { Injector } from "./Injector";
 
 describe('Injector', function () {
+    beforeEach(function () {
+        Injector.setContainer(undefined as any);
+    });
+
+    afterEach(function () {
+        Injector.setContainer(undefined as any);
+    });
+
     describe('createContainer', function () {
         it('should create a new Container', function () {
             const result = Injector.createContainer();
@@ -32,14 +40,32 @@ describe('Injector', function () {
     });
 
     describe('inject', function () {
-        it.skip('should inject parameters into a factory', function () {
+        it('should inject values into a parameters', function () {
+            const container = Injector.getContainer();
+            const type = 'type';
+            const value = 'value';
+            container.bindValue(type, value);
 
+            function test(value: string = Injector.inject(type)) {
+                return value;
+            }
+            const result = test();
+
+            expect(result).toBe(value);
         });
-    });
 
-    describe('create', function () {
-        it.skip('should inject parameters into a constructor', function () {
+        it('should use a specified Container', function () {
+            const container = Injector.createContainer();
+            const type = 'type';
+            const value = 'value';
+            container.bindValue(type, value);
 
+            function test(value: string = Injector.inject(type, container)) {
+                return value;
+            }
+            const result = test();
+
+            expect(result).toBe(value);
         });
     });
 });

@@ -1,3 +1,2 @@
-export { IConstructor, IFactory } from './Types';
-export { inject, factory } from './Decorators';
+export { Container } from './Container';
 export { Injector } from './Injector';

@@ -1,6 +1,5 @@
 import { Container } from './Container';
-import { ParameterInfo } from './ParameterInfo';
-import { IConstructor, IFactory } from './Types';
+import { Index } from './Types';
 
 export namespace Injector {
     let container: Container;
@@ -21,11 +20,14 @@ export namespace Injector {
         container = _container;
     }
 
-    export function inject<T>(factory: IFactory<T>, container?: Container) {
-        return factory(...ParameterInfo.getArgs(factory, undefined, container));
-    }
-
-    export function create<T>(Constructor: IConstructor<T>, container?: Container) {
-        return new Constructor(...ParameterInfo.getArgs(Constructor, undefined, container));
+    export function inject<T>(type: Index, ...args: any): T;
+    export function inject<T>(type: Index, container: Container, ...args: any): T;
+    export function inject<T>(type: Index, a: any, ...args: any): T {
+        if (a instanceof Container) {
+            return a.get(type, ...args);
+        } else {
+            const container = getContainer();
+            return container.get(type, a, ...args);
+        }
     }
 }
