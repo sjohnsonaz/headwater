@@ -1,4 +1,4 @@
-import { Container, InjectionBindingType } from "./Container";
+import { Container, inject, InjectionBindingType } from "./Container";
 
 describe('Container', function () {
     describe('constructor', function () {
@@ -137,7 +137,7 @@ describe('Container', function () {
                 const value = 'value';
                 container.bindValue(type, value);
 
-                function test(value: string = Container.inject(type)) {
+                function test(value: string = inject(type)) {
                     return value;
                 }
                 const result = test();
@@ -151,7 +151,7 @@ describe('Container', function () {
                 const value = 'value';
                 container.bindValue(type, value);
 
-                function test(value: string = Container.inject(type, container)) {
+                function test(value: string = inject(type, container)) {
                     return value;
                 }
                 const result = test();
