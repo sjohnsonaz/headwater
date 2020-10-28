@@ -102,7 +102,7 @@ container.bindFactory('factory', factory);
 
 ## Injecting Values
 
-We can inject any bound `Type` with the method `Container.get()` or the static method `Container.inject()`.
+We can inject any bound `Type` with the method `Container.get()` or the function `inject()`.
 
 We inject into a function by **default parameter** values.  For any function, we can specify default parameters.  If undefined is passed into that parameter, the default value is used instead.
 
@@ -144,18 +144,20 @@ function factory(value = container.get('constructor', 1, 2, 3)) {
 }
 ```
 
-We can also use `Container.inject()`, which uses the default `Container`.
+We can also use `inject()`, which uses the default `Container`.
 
 ``` TypeScript
-function factory(value = Container.inject('value')) {
+import { inject } from 'headwater';
+
+function factory(value = inject('value')) {
     return value;
 }
 ```
 
-We can also specify a `Container` for `Container.inject()`.
+We can also specify a `Container` for `inject()`.
 
 ``` TypeScript
-function factory(value = Container.inject('value', container)) {
+function factory(value = inject('value', container)) {
     return value;
 }
 ```
