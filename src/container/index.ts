@@ -1,1 +1,1 @@
-export { Container } from './Container';
+export { Container, inject } from './Container';

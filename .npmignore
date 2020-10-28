@@ -5,7 +5,7 @@ node_modules/
 docs/
 
 # Source directory
-src/
+# src/
 
 # Build directory
 dist/bundle/
@@ -14,7 +14,7 @@ dist/mocha/
 coverage/
 
 # Sourcemap, log, packed files
-*.map
+# *.map
 *.log
 *.tgz
 

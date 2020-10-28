@@ -96,10 +96,12 @@ export class Container {
      * Gets the default Container
      */
     static getDefault() {
-        if (!this.default) {
-            this.default = new Container();
+        let container = this.default;
+        if (!container) {
+            container = new Container();
+            this.default = container
         }
-        return this.default;
+        return container;
     }
 
     /**
@@ -107,36 +109,36 @@ export class Container {
      * @param container - a Container object
      */
     static setDefault(container: Container) {
-        this.default = container;
+        Container.default = container;
     }
+}
 
-    /**
-     * Gets a value fron a specified Container by Type
-     * 
-     * This can be used as a default parameter value for other functions.
-     * 
-     * @param type - a bound Type
-     * @param container - a Container to use
-     * @param args - zero or more args to pass if the bound value is a function or constructor
-     */
-    static inject<T>(type: Type, container: Container, ...args: any): T;
+/**
+ * Gets a value fron a specified Container by Type
+ * 
+ * This can be used as a default parameter value for other functions.
+ * 
+ * @param type - a bound Type
+ * @param container - a Container to use
+ * @param args - zero or more args to pass if the bound value is a function or constructor
+ */
+export function inject<T>(type: Type, container: Container, ...args: any): T;
 
-    /**
-     * Gets a value fron the default Container by Type
-     * 
-     * This can be used as a default parameter value for other functions.
-     * 
-     * @param type - a bound Type
-     * @param [args] - zero or more args to pass if the bound value is a function or constructor
-     */
-    static inject<T>(type: Type, ...args: any): T;
+/**
+ * Gets a value fron the default Container by Type
+ * 
+ * This can be used as a default parameter value for other functions.
+ * 
+ * @param type - a bound Type
+ * @param [args] - zero or more args to pass if the bound value is a function or constructor
+ */
+export function inject<T>(type: Type, ...args: any): T;
 
-    static inject<T>(type: Type, a: any, ...args: any): T {
-        if (a instanceof Container) {
-            return a.get(type, ...args);
-        } else {
-            const container = this.getDefault();
-            return container.get(type, a, ...args);
-        }
+export function inject<T>(type: Type, a: any, ...args: any): T {
+    if (a instanceof Container) {
+        return a.get(type, ...args);
+    } else {
+        const container = Container.getDefault();
+        return container.get(type, a, ...args);
     }
 }
