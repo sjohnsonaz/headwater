@@ -1,2 +1,2 @@
-export * from './injector';
+export * from './container';
 export * from './mediator';

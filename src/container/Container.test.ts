@@ -52,7 +52,7 @@ describe('Container', function () {
         });
     });
 
-    describe('getValue', function () {
+    describe('get', function () {
         it('should throw when no binding is found', function () {
             const container = new Container();
             const type = 'type';
@@ -89,6 +89,75 @@ describe('Container', function () {
             container.bindFactory(type, factory);
             const result: Test = container.get(type);
             expect(result).toBeInstanceOf(Test);
+        });
+    });
+
+    describe('static', function () {
+        beforeEach(function () {
+            Container.setDefault(undefined as any);
+        });
+
+        afterEach(function () {
+            Container.setDefault(undefined as any);
+        });
+
+        describe('createContainer', function () {
+            it('should create a new Container', function () {
+                const result = new Container();
+                expect(result).toBeInstanceOf(Container);
+            });
+        });
+
+        describe('getDefault', function () {
+            it('should create a Container if none exists', function () {
+                const result = Container.getDefault();
+                expect(result).toBeInstanceOf(Container);
+            });
+
+            it('should get the default Container', function () {
+                const result0 = Container.getDefault();
+                const result1 = Container.getDefault();
+                expect(result0).toBe(result1);
+            });
+        });
+
+        describe('setDefault', function () {
+            it('should set the default Contaienr', function () {
+                const container = new Container();
+                Container.setDefault(container);
+                const result = Container.getDefault();
+                expect(result).toBe(container);
+            });
+        });
+
+        describe('inject', function () {
+            it('should inject values into a parameters', function () {
+                const container = Container.getDefault();
+                const type = 'type';
+                const value = 'value';
+                container.bindValue(type, value);
+
+                function test(value: string = Container.inject(type)) {
+                    return value;
+                }
+                const result = test();
+
+                expect(result).toBe(value);
+            });
+
+            it('should use a specified Container', function () {
+                const container = new Container();
+                const type = 'type';
+                const value = 'value';
+                container.bindValue(type, value);
+
+                function test(value: string = Container.inject(type, container)) {
+                    return value;
+                }
+                const result = test();
+
+                expect(result).toBe(value);
+            });
         });
     });
 });
