@@ -26,9 +26,6 @@ coverage/
 # webpack.dev.config.js
 # .travis.yml
 
-# Editor configuration files
-.vscode/
-
 # MkDocs files
 # mkdocs.yml
 site
