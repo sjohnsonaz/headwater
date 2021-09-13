@@ -7,23 +7,32 @@ export type IFactory<T> = (...args: any) => T;
 export enum InjectionBindingType {
     value = 'value',
     constructor = 'constructor',
-    factory = 'factory'
+    factory = 'factory',
 }
 
-export interface InjectionBinding {
-    bindingType: InjectionBindingType;
-    value: any;
-}
+export type InjectionBinding<T> =
+    | {
+          bindingType: InjectionBindingType.constructor;
+          value: IConstructor<T>;
+      }
+    | {
+          bindingType: InjectionBindingType.factory;
+          value: IFactory<T>;
+      }
+    | {
+          bindingType: InjectionBindingType.value;
+          value: T;
+      };
 
 /**
  * An Inversion of Control Container.
- * 
+ *
  * Values, constructors, and factories can be bound to a Type.
- * 
+ *
  * Then, given a Type, they can be retrieved later.
  */
 export class Container {
-    bindings: Record<Type, InjectionBinding> = {};
+    bindings: Record<Type, InjectionBinding<any>> = {};
 
     /**
      * Binds a value to a Type
@@ -33,7 +42,7 @@ export class Container {
     bindValue<T>(type: Type, value: T) {
         this.bindings[type as any] = {
             bindingType: InjectionBindingType.value,
-            value
+            value,
         };
     }
 
@@ -45,7 +54,7 @@ export class Container {
     bindConstructor<T>(type: Type, constructor: IConstructor<T>) {
         this.bindings[type as any] = {
             bindingType: InjectionBindingType.constructor,
-            value: constructor
+            value: constructor,
         };
     }
 
@@ -57,21 +66,21 @@ export class Container {
     bindFactory<T>(type: Type, factory: IFactory<T>) {
         this.bindings[type as any] = {
             bindingType: InjectionBindingType.factory,
-            value: factory
+            value: factory,
         };
     }
 
     /**
      * Gets a value for a given Type.
-     * 
+     *
      * If the value is a value, it is returned.
      * If the value is a constructor, a new object is created.
      * If the value is a factory, the factory is run.
-     * 
+     *
      * Args are passed to constructors and factories.
-     * 
+     *
      * This can be used as a default parameter value for other functions.
-     * 
+     *
      * @param type - a bound Type
      * @param args - zero or more args to pass if the bound value is a function or constructor
      */
@@ -99,7 +108,7 @@ export class Container {
         let container = this.default;
         if (!container) {
             container = new Container();
-            this.default = container
+            this.default = container;
         }
         return container;
     }
@@ -115,9 +124,9 @@ export class Container {
 
 /**
  * Gets a value fron a specified Container by Type
- * 
+ *
  * This can be used as a default parameter value for other functions.
- * 
+ *
  * @param type - a bound Type
  * @param container - a Container to use
  * @param args - zero or more args to pass if the bound value is a function or constructor
@@ -126,9 +135,9 @@ export function inject<T>(type: Type, container: Container, ...args: any): T;
 
 /**
  * Gets a value fron the default Container by Type
- * 
+ *
  * This can be used as a default parameter value for other functions.
- * 
+ *
  * @param type - a bound Type
  * @param [args] - zero or more args to pass if the bound value is a function or constructor
  */

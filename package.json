@@ -16,7 +16,6 @@
     "test": "jest --verbose --coverage",
     "node": "node ./dist/index.js"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "26.0.14",
     "jest": "26.5.3",
