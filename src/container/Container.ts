@@ -11,17 +11,17 @@ export enum InjectionBindingType {
 }
 
 export type ConstructorBinding<T> = {
-    bindingType: InjectionBindingType.constructor;
+    type: InjectionBindingType.constructor;
     value: IConstructor<T>;
 };
 
 export type FactoryBinding<T> = {
-    bindingType: InjectionBindingType.factory;
+    type: InjectionBindingType.factory;
     value: IFactory<T>;
 };
 
 export type ValueBinding<T> = {
-    bindingType: InjectionBindingType.value;
+    type: InjectionBindingType.value;
     value: T;
 };
 
@@ -76,7 +76,7 @@ export class Container<
      */
     bindValue<TKey extends keyof T, TValue extends InjectionType<T[TKey]>>(type: TKey, value: TValue) {
         this.bindings[type] = {
-            bindingType: InjectionBindingType.value,
+            type: InjectionBindingType.value,
             value,
         } as any;
     }
@@ -91,7 +91,7 @@ export class Container<
         constructor: TConstructor,
     ) {
         this.bindings[type] = {
-            bindingType: InjectionBindingType.constructor,
+            type: InjectionBindingType.constructor,
             value: constructor,
         } as any;
     }
@@ -106,7 +106,7 @@ export class Container<
         factory: TFactory,
     ) {
         this.bindings[type] = {
-            bindingType: InjectionBindingType.factory,
+            type: InjectionBindingType.factory,
             value: factory,
         } as any;
     }
@@ -134,7 +134,7 @@ export class Container<
             throw `No binding associated with: ${type.toString()}`;
         }
         const value: InjectionValue<T[TKey]> = binding.value;
-        switch (binding.bindingType) {
+        switch (binding.type) {
             case InjectionBindingType.value:
                 return binding.value;
             case InjectionBindingType.constructor:
