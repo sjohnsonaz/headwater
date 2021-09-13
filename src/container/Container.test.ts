@@ -1,4 +1,4 @@
-import { Container, inject, InjectionBindingType } from './Container';
+import { Container, inject, BindingType } from './Container';
 
 describe('Container', function () {
     describe('constructor', function () {
@@ -18,32 +18,32 @@ describe('Container', function () {
 
             const container = new Container({
                 value: {
-                    type: InjectionBindingType.value,
+                    type: BindingType.value,
                     value: 'value',
                 },
                 constr: {
-                    type: InjectionBindingType.constructor,
+                    type: BindingType.constructor,
                     value: Test,
                 },
                 factory: {
-                    type: InjectionBindingType.factory,
+                    type: BindingType.factory,
                     value: factory,
                 },
             });
 
             const valueBinding = container.bindings['value'];
             expect(valueBinding).toBeDefined();
-            expect(valueBinding.type).toBe(InjectionBindingType.value);
+            expect(valueBinding.type).toBe(BindingType.value);
             expect(valueBinding.value).toBe('value');
 
             const constrBinding = container.bindings['constr'];
             expect(constrBinding).toBeDefined();
-            expect(constrBinding.type).toBe(InjectionBindingType.constructor);
+            expect(constrBinding.type).toBe(BindingType.constructor);
             expect(constrBinding.value).toBe(Test);
 
             const factoryBinding = container.bindings['factory'];
             expect(factoryBinding).toBeDefined();
-            expect(factoryBinding.type).toBe(InjectionBindingType.factory);
+            expect(factoryBinding.type).toBe(BindingType.factory);
             expect(factoryBinding.value).toBe(factory);
         });
     });
@@ -58,7 +58,7 @@ describe('Container', function () {
 
             const result = container.bindings[type];
             expect(result).toBeDefined();
-            expect(result.type).toBe(InjectionBindingType.value);
+            expect(result.type).toBe(BindingType.value);
             expect(result.value).toBe(value);
         });
     });
@@ -73,7 +73,7 @@ describe('Container', function () {
 
             const result = container.bindings[type];
             expect(result).toBeDefined();
-            expect(result.type).toBe(InjectionBindingType.constructor);
+            expect(result.type).toBe(BindingType.constructor);
             expect(result.value).toBe(Test);
         });
     });
@@ -91,7 +91,7 @@ describe('Container', function () {
 
             const result = container.bindings[type];
             expect(result).toBeDefined();
-            expect(result.type).toBe(InjectionBindingType.factory);
+            expect(result.type).toBe(BindingType.factory);
             expect(result.value).toBe(factory);
         });
     });
@@ -110,7 +110,7 @@ describe('Container', function () {
             const value = 'value';
             const container = new Container({
                 [type]: {
-                    type: InjectionBindingType.value,
+                    type: BindingType.value,
                     value,
                 },
             });
@@ -125,7 +125,7 @@ describe('Container', function () {
             class Test {}
             const container = new Container({
                 [type]: {
-                    type: InjectionBindingType.constructor,
+                    type: BindingType.constructor,
                     value: Test,
                 },
             });
@@ -143,7 +143,7 @@ describe('Container', function () {
             }
             const container = new Container({
                 [type]: {
-                    type: InjectionBindingType.factory,
+                    type: BindingType.factory,
                     value: factory,
                 },
             });
@@ -187,7 +187,7 @@ describe('Container', function () {
             it('should set the default Contaienr', function () {
                 const container = new Container({
                     type: {
-                        type: InjectionBindingType.value,
+                        type: BindingType.value,
                         value: 'test',
                     },
                 });
@@ -218,7 +218,7 @@ describe('Container', function () {
 
                 const container = new Container({
                     [type]: {
-                        type: InjectionBindingType.value,
+                        type: BindingType.value,
                         value: 'value',
                     },
                 });

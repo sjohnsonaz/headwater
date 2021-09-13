@@ -4,24 +4,24 @@ export type IConstructor<T> = new (...args: any) => T;
 
 export type IFactory<T> = (...args: any) => T;
 
-export enum InjectionBindingType {
+export enum BindingType {
     value = 'value',
     constructor = 'constructor',
     factory = 'factory',
 }
 
 export type ConstructorBinding<T> = {
-    type: InjectionBindingType.constructor;
+    type: BindingType.constructor;
     value: IConstructor<T>;
 };
 
 export type FactoryBinding<T> = {
-    type: InjectionBindingType.factory;
+    type: BindingType.factory;
     value: IFactory<T>;
 };
 
 export type ValueBinding<T> = {
-    type: InjectionBindingType.value;
+    type: BindingType.value;
     value: T;
 };
 
@@ -76,7 +76,7 @@ export class Container<
      */
     bindValue<TKey extends keyof T, TValue extends InjectionType<T[TKey]>>(type: TKey, value: TValue) {
         this.bindings[type] = {
-            type: InjectionBindingType.value,
+            type: BindingType.value,
             value,
         } as any;
     }
@@ -91,7 +91,7 @@ export class Container<
         constructor: TConstructor,
     ) {
         this.bindings[type] = {
-            type: InjectionBindingType.constructor,
+            type: BindingType.constructor,
             value: constructor,
         } as any;
     }
@@ -106,7 +106,7 @@ export class Container<
         factory: TFactory,
     ) {
         this.bindings[type] = {
-            type: InjectionBindingType.factory,
+            type: BindingType.factory,
             value: factory,
         } as any;
     }
@@ -135,12 +135,12 @@ export class Container<
         }
         const value: InjectionValue<T[TKey]> = binding.value;
         switch (binding.type) {
-            case InjectionBindingType.value:
+            case BindingType.value:
                 return binding.value;
-            case InjectionBindingType.constructor:
+            case BindingType.constructor:
                 // @ts-ignore TODO: Fix this
                 return new value(...args);
-            case InjectionBindingType.factory:
+            case BindingType.factory:
                 // @ts-ignore TODO: Fix this
                 return value(...args);
         }
