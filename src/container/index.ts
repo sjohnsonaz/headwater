@@ -1,1 +1,1 @@
-export { Container, inject } from './Container';
+export { Container, inject, DefaultBindings, BindingType } from './Container';
