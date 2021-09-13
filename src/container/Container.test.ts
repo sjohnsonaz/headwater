@@ -17,6 +17,9 @@ describe('Container', function () {
             }
 
             const container = new Container({
+                defaultValue: {
+                    value: 'defaultValue',
+                },
                 value: {
                     type: BindingType.value,
                     value: 'value',
@@ -30,6 +33,12 @@ describe('Container', function () {
                     value: factory,
                 },
             });
+
+            const defaultValueBinding = container.bindings['defaultValue'];
+            expect(defaultValueBinding).toBeDefined();
+            // @ts-expect-error
+            expect(defaultValueBinding.type).toBe(undefined);
+            expect(defaultValueBinding.value).toBe('defaultValue');
 
             const valueBinding = container.bindings['value'];
             expect(valueBinding).toBeDefined();

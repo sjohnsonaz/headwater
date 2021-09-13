@@ -11,17 +11,17 @@ export enum BindingType {
 }
 
 export type ConstructorBinding<T> = {
-    type: BindingType.constructor;
+    type: BindingType.constructor | `${BindingType.constructor}`;
     value: IConstructor<T>;
 };
 
 export type FactoryBinding<T> = {
-    type: BindingType.factory;
+    type: BindingType.factory | `${BindingType.factory}`;
     value: IFactory<T>;
 };
 
 export type ValueBinding<T> = {
-    type: BindingType.value;
+    type?: BindingType.value | `${BindingType.value}`;
     value: T;
 };
 
@@ -125,9 +125,6 @@ export class Container<
      * @param type - a bound Type
      * @param args - zero or more args to pass if the bound value is a function or constructor
      */
-    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
-    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
-    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
     get<TKey extends keyof T>(type: TKey, ...args: InjectionParams<T[TKey]>): InjectionType<T[TKey]> {
         let binding = this.bindings[type];
         if (!binding) {
@@ -135,14 +132,18 @@ export class Container<
         }
         const value: InjectionValue<T[TKey]> = binding.value;
         switch (binding.type) {
-            case BindingType.value:
-                return binding.value;
             case BindingType.constructor:
+            case 'constructor':
                 // @ts-ignore TODO: Fix this
                 return new value(...args);
             case BindingType.factory:
+            case 'factory':
                 // @ts-ignore TODO: Fix this
                 return value(...args);
+            case BindingType.value:
+            case 'value':
+            default:
+                return binding.value;
         }
     }
 
