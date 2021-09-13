@@ -1,4 +1,4 @@
-import { ConstructorBinding, Container, inject, InjectionBindingType, InjectionType } from './Container';
+import { Container, inject, InjectionBindingType } from './Container';
 
 describe('Container', function () {
     describe('constructor', function () {
@@ -8,14 +8,54 @@ describe('Container', function () {
             expect(container.bindings).toBeInstanceOf(Object);
             expect(Object.keys(container.bindings).length).toBe(0);
         });
+
+        it('should bind values', function () {
+            class Test {}
+
+            function factory() {
+                return new Test();
+            }
+
+            const container = new Container({
+                value: {
+                    bindingType: InjectionBindingType.value,
+                    value: 'value',
+                },
+                constr: {
+                    bindingType: InjectionBindingType.constructor,
+                    value: Test,
+                },
+                factory: {
+                    bindingType: InjectionBindingType.factory,
+                    value: factory,
+                },
+            });
+
+            const valueBinding = container.bindings['value'];
+            expect(valueBinding).toBeDefined();
+            expect(valueBinding.bindingType).toBe(InjectionBindingType.value);
+            expect(valueBinding.value).toBe('value');
+
+            const constrBinding = container.bindings['constr'];
+            expect(constrBinding).toBeDefined();
+            expect(constrBinding.bindingType).toBe(InjectionBindingType.constructor);
+            expect(constrBinding.value).toBe(Test);
+
+            const factoryBinding = container.bindings['factory'];
+            expect(factoryBinding).toBeDefined();
+            expect(factoryBinding.bindingType).toBe(InjectionBindingType.factory);
+            expect(factoryBinding.value).toBe(factory);
+        });
     });
 
     describe('bindValue', function () {
         it('should bind a value', function () {
             const container = new Container();
+
             const type = 'type';
             const value = 'value';
             container.bindValue(type, value);
+
             const result = container.bindings[type];
             expect(result).toBeDefined();
             expect(result.bindingType).toBe(InjectionBindingType.value);
@@ -26,9 +66,11 @@ describe('Container', function () {
     describe('bindConstructor', function () {
         it('should bind a constructor', function () {
             const container = new Container();
+
             const type = 'type';
             class Test {}
             container.bindConstructor(type, Test);
+
             const result = container.bindings[type];
             expect(result).toBeDefined();
             expect(result.bindingType).toBe(InjectionBindingType.constructor);
@@ -39,12 +81,14 @@ describe('Container', function () {
     describe('bindFactory', function () {
         it('should bind a factory', function () {
             const container = new Container();
+
             const type = 'type';
             class Test {}
             function factory() {
                 return new Test();
             }
             container.bindFactory(type, factory);
+
             const result = container.bindings[type];
             expect(result).toBeDefined();
             expect(result.bindingType).toBe(InjectionBindingType.factory);
@@ -62,30 +106,41 @@ describe('Container', function () {
         });
 
         it('should get a value', function () {
-            const container = new Container();
             const type = 'type';
             const value = 'value';
-            container.bindValue(type, value);
-            const result: string = container.get(type);
+            const container = new Container({
+                [type]: {
+                    bindingType: InjectionBindingType.value,
+                    value,
+                },
+            });
+
+            const result = container.get(type);
+
             expect(result).toBe(value);
         });
 
         it('should get a constructor', function () {
-            const container = new Container();
             const type = 'type';
             class Test {}
-            container.bindConstructor(type, Test);
-            const result: Test = container.get(type);
+            const container = new Container({
+                [type]: {
+                    bindingType: InjectionBindingType.constructor,
+                    value: Test,
+                },
+            });
+
+            const result = container.get(type);
+
             expect(result).toBeInstanceOf(Test);
         });
 
         it('should get a factory', function () {
+            const type = 'type';
             class Test {}
             function factory() {
                 return new Test();
             }
-
-            const type = 'type';
             const container = new Container({
                 [type]: {
                     bindingType: InjectionBindingType.factory,
@@ -94,6 +149,7 @@ describe('Container', function () {
             });
 
             const result = container.get(type);
+
             expect(result).toBeInstanceOf(Test);
         });
     });
@@ -129,7 +185,12 @@ describe('Container', function () {
 
         describe('setDefault', function () {
             it('should set the default Contaienr', function () {
-                const container = new Container();
+                const container = new Container({
+                    type: {
+                        bindingType: InjectionBindingType.value,
+                        value: 'test',
+                    },
+                });
                 Container.setDefault(container);
                 const result = Container.getDefault();
                 expect(result).toBe(container);
@@ -139,11 +200,12 @@ describe('Container', function () {
         describe('inject', function () {
             it('should inject values into a parameters', function () {
                 const container = Container.getDefault();
+
                 const type = 'type';
                 const value = 'value';
                 container.bindValue(type, value);
 
-                function test(value: string = inject(type)) {
+                function test(value = inject(type)) {
                     return value;
                 }
                 const result = test();
@@ -152,18 +214,33 @@ describe('Container', function () {
             });
 
             it('should use a specified Container', function () {
-                const container = new Container();
                 const type = 'type';
-                const value = 'value';
-                container.bindValue(type, value);
 
-                function test(value: string = inject(type, container)) {
+                const container = new Container({
+                    [type]: {
+                        bindingType: InjectionBindingType.value,
+                        value: 'value',
+                    },
+                });
+
+                function test(value = inject(container, type)) {
                     return value;
                 }
                 const result = test();
 
-                expect(result).toBe(value);
+                expect(result).toBe('value');
             });
         });
     });
 });
+
+// Type declaration to extend DefaultBindings
+// These can be used to test typings, but should remain commented out
+// declare module './Container' {
+//     interface DefaultBindings {
+//         type: {
+//             bindingType: InjectionBindingType.value;
+//             value: string;
+//         };
+//     }
+// }

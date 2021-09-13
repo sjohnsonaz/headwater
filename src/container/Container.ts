@@ -45,6 +45,10 @@ export type InjectionParams<T extends InjectionBinding<any>> = T extends Constru
 
 export type InjectionValue<T extends InjectionBinding<any>> = T['value'];
 
+export interface DefaultBindings {
+    [index: string]: InjectionBinding<any>;
+}
+
 /**
  * An Inversion of Control Container.
  *
@@ -52,22 +56,17 @@ export type InjectionValue<T extends InjectionBinding<any>> = T['value'];
  *
  * Then, given a Type, they can be retrieved later.
  */
-export class Container<T extends Record<Type, InjectionBinding<any>> = Record<Type, InjectionBinding<any>>> {
+export class Container<
+    T extends {
+        [index: string]: InjectionBinding<any>;
+    } = {
+        [index: string]: InjectionBinding<any>;
+    },
+> {
     bindings: T = {} as any;
 
     constructor(bindings: T = {} as any) {
         this.bindings = bindings;
-    }
-
-    bind<T>({ type, ...injectionBinding }: { type: Type } & InjectionBinding<T>) {
-        this.bindings[type as keyof T] = injectionBinding as any;
-    }
-
-    bindAll<T extends Record<Type, InjectionBinding<any>>>(bindings: T): T {
-        Object.entries(bindings).forEach(([type, binding]) => {
-            this.bind({ type, ...binding });
-        });
-        return bindings;
     }
 
     /**
@@ -147,7 +146,7 @@ export class Container<T extends Record<Type, InjectionBinding<any>> = Record<Ty
         }
     }
 
-    private static default: Container | undefined;
+    private static default: Container<DefaultBindings> | undefined;
 
     /**
      * Gets the default Container
@@ -165,7 +164,7 @@ export class Container<T extends Record<Type, InjectionBinding<any>> = Record<Ty
      * Sets the default Container
      * @param container - a Container object
      */
-    static setDefault<TContainer extends Container>(container: TContainer) {
+    static setDefault<TContainer extends Container<DefaultBindings>>(container: TContainer) {
         Container.default = container;
     }
 }
@@ -179,7 +178,11 @@ export class Container<T extends Record<Type, InjectionBinding<any>> = Record<Ty
  * @param container - a Container to use
  * @param args - zero or more args to pass if the bound value is a function or constructor
  */
-export function inject<T>(type: Type, container: Container, ...args: any): T;
+export function inject<TContainer extends Container, TKey extends keyof TContainer['bindings']>(
+    container: TContainer,
+    type: TKey,
+    ...args: InjectionParams<TContainer['bindings'][TKey]>
+): InjectionType<TContainer['bindings'][TKey]>;
 
 /**
  * Gets a value fron the default Container by Type
@@ -189,14 +192,17 @@ export function inject<T>(type: Type, container: Container, ...args: any): T;
  * @param type - a bound Type
  * @param [args] - zero or more args to pass if the bound value is a function or constructor
  */
-export function inject<T>(type: Type, ...args: any): T;
+export function inject<TKey extends keyof DefaultBindings>(
+    type: TKey,
+    ...args: InjectionParams<DefaultBindings[TKey]>
+): InjectionType<DefaultBindings[TKey]>;
 
-export function inject<T>(type: Type, a: any, ...args: any): T {
+export function inject<T>(a: any, b: any, ...args: any): T {
     if (a instanceof Container) {
         // @ts-ignore TODO: Fix this
-        return a.get(type, ...args);
+        return a.get(b, ...args);
     } else {
         const container = Container.getDefault();
-        return container.get(type, a, ...args);
+        return container.get(a, ...[b, ...args]);
     }
 }
