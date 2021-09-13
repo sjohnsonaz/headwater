@@ -10,19 +10,40 @@ export enum InjectionBindingType {
     factory = 'factory',
 }
 
-export type InjectionBinding<T> =
-    | {
-          bindingType: InjectionBindingType.constructor;
-          value: IConstructor<T>;
-      }
-    | {
-          bindingType: InjectionBindingType.factory;
-          value: IFactory<T>;
-      }
-    | {
-          bindingType: InjectionBindingType.value;
-          value: T;
-      };
+export type ConstructorBinding<T> = {
+    bindingType: InjectionBindingType.constructor;
+    value: IConstructor<T>;
+};
+
+export type FactoryBinding<T> = {
+    bindingType: InjectionBindingType.factory;
+    value: IFactory<T>;
+};
+
+export type ValueBinding<T> = {
+    bindingType: InjectionBindingType.value;
+    value: T;
+};
+
+export type InjectionBinding<T> = ConstructorBinding<T> | FactoryBinding<T> | ValueBinding<T>;
+
+export type InjectionType<T> = T extends ConstructorBinding<infer U>
+    ? U
+    : T extends FactoryBinding<infer U>
+    ? U
+    : T extends ValueBinding<infer U>
+    ? U
+    : never;
+
+export type InjectionParams<T extends InjectionBinding<any>> = T extends ConstructorBinding<any>
+    ? ConstructorParameters<T['value']>
+    : T extends FactoryBinding<any>
+    ? Parameters<T['value']>
+    : T extends ValueBinding<any>
+    ? never
+    : never;
+
+export type InjectionValue<T extends InjectionBinding<any>> = T['value'];
 
 /**
  * An Inversion of Control Container.
@@ -31,19 +52,34 @@ export type InjectionBinding<T> =
  *
  * Then, given a Type, they can be retrieved later.
  */
-export class Container {
-    bindings: Record<Type, InjectionBinding<any>> = {};
+export class Container<T extends Record<Type, InjectionBinding<any>> = Record<Type, InjectionBinding<any>>> {
+    bindings: T = {} as any;
+
+    constructor(bindings: T = {} as any) {
+        this.bindings = bindings;
+    }
+
+    bind<T>({ type, ...injectionBinding }: { type: Type } & InjectionBinding<T>) {
+        this.bindings[type as keyof T] = injectionBinding as any;
+    }
+
+    bindAll<T extends Record<Type, InjectionBinding<any>>>(bindings: T): T {
+        Object.entries(bindings).forEach(([type, binding]) => {
+            this.bind({ type, ...binding });
+        });
+        return bindings;
+    }
 
     /**
      * Binds a value to a Type
      * @param type - a Type to bind
      * @param value - a value to bind
      */
-    bindValue<T>(type: Type, value: T) {
+    bindValue<TKey extends keyof T, TValue extends InjectionType<T[TKey]>>(type: TKey, value: TValue) {
         this.bindings[type] = {
             bindingType: InjectionBindingType.value,
             value,
-        };
+        } as any;
     }
 
     /**
@@ -51,11 +87,14 @@ export class Container {
      * @param type - a Type to bind
      * @param constructor - a constructor to bind
      */
-    bindConstructor<T>(type: Type, constructor: IConstructor<T>) {
+    bindConstructor<TKey extends keyof T, TConstructor extends IConstructor<InjectionType<T[TKey]>>>(
+        type: TKey,
+        constructor: TConstructor,
+    ) {
         this.bindings[type] = {
             bindingType: InjectionBindingType.constructor,
             value: constructor,
-        };
+        } as any;
     }
 
     /**
@@ -63,11 +102,14 @@ export class Container {
      * @param type - a Type to bind
      * @param factory - a factory to bind
      */
-    bindFactory<T>(type: Type, factory: IFactory<T>) {
+    bindFactory<TKey extends keyof T, TFactory extends IFactory<InjectionType<T[TKey]>>>(
+        type: TKey,
+        factory: TFactory,
+    ) {
         this.bindings[type] = {
             bindingType: InjectionBindingType.factory,
             value: factory,
-        };
+        } as any;
     }
 
     /**
@@ -84,18 +126,24 @@ export class Container {
      * @param type - a bound Type
      * @param args - zero or more args to pass if the bound value is a function or constructor
      */
-    get<T = any>(type: Type, ...args: any): T {
-        let binding = this.bindings[type as any];
+    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
+    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
+    // get<TKey extends keyof T>(type: TKey, ...args: any): InjectionValue<T[TKey]>;
+    get<TKey extends keyof T>(type: TKey, ...args: InjectionParams<T[TKey]>): InjectionType<T[TKey]> {
+        let binding = this.bindings[type];
         if (!binding) {
             throw `No binding associated with: ${type.toString()}`;
         }
+        const value: InjectionValue<T[TKey]> = binding.value;
         switch (binding.bindingType) {
             case InjectionBindingType.value:
                 return binding.value;
             case InjectionBindingType.constructor:
-                return new binding.value(...args);
+                // @ts-ignore TODO: Fix this
+                return new value(...args);
             case InjectionBindingType.factory:
-                return binding.value(...args);
+                // @ts-ignore TODO: Fix this
+                return value(...args);
         }
     }
 
@@ -117,7 +165,7 @@ export class Container {
      * Sets the default Container
      * @param container - a Container object
      */
-    static setDefault(container: Container) {
+    static setDefault<TContainer extends Container>(container: TContainer) {
         Container.default = container;
     }
 }
@@ -145,6 +193,7 @@ export function inject<T>(type: Type, ...args: any): T;
 
 export function inject<T>(type: Type, a: any, ...args: any): T {
     if (a instanceof Container) {
+        // @ts-ignore TODO: Fix this
         return a.get(type, ...args);
     } else {
         const container = Container.getDefault();

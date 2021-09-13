@@ -1,4 +1,4 @@
-import { Container, inject, InjectionBindingType } from "./Container";
+import { ConstructorBinding, Container, inject, InjectionBindingType, InjectionType } from './Container';
 
 describe('Container', function () {
     describe('constructor', function () {
@@ -27,7 +27,7 @@ describe('Container', function () {
         it('should bind a constructor', function () {
             const container = new Container();
             const type = 'type';
-            class Test { }
+            class Test {}
             container.bindConstructor(type, Test);
             const result = container.bindings[type];
             expect(result).toBeDefined();
@@ -40,7 +40,7 @@ describe('Container', function () {
         it('should bind a factory', function () {
             const container = new Container();
             const type = 'type';
-            class Test { }
+            class Test {}
             function factory() {
                 return new Test();
             }
@@ -73,21 +73,27 @@ describe('Container', function () {
         it('should get a constructor', function () {
             const container = new Container();
             const type = 'type';
-            class Test { }
+            class Test {}
             container.bindConstructor(type, Test);
             const result: Test = container.get(type);
             expect(result).toBeInstanceOf(Test);
         });
 
-        it('should get a facotry', function () {
-            const container = new Container();
-            const type = 'type';
-            class Test { }
+        it('should get a factory', function () {
+            class Test {}
             function factory() {
                 return new Test();
             }
-            container.bindFactory(type, factory);
-            const result: Test = container.get(type);
+
+            const type = 'type';
+            const container = new Container({
+                [type]: {
+                    bindingType: InjectionBindingType.factory,
+                    value: factory,
+                },
+            });
+
+            const result = container.get(type);
             expect(result).toBeInstanceOf(Test);
         });
     });
