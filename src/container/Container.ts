@@ -40,7 +40,7 @@ export class Container {
      * @param value - a value to bind
      */
     bindValue<T>(type: Type, value: T) {
-        this.bindings[type as any] = {
+        this.bindings[type] = {
             bindingType: InjectionBindingType.value,
             value,
         };
@@ -52,7 +52,7 @@ export class Container {
      * @param constructor - a constructor to bind
      */
     bindConstructor<T>(type: Type, constructor: IConstructor<T>) {
-        this.bindings[type as any] = {
+        this.bindings[type] = {
             bindingType: InjectionBindingType.constructor,
             value: constructor,
         };
@@ -64,7 +64,7 @@ export class Container {
      * @param factory - a factory to bind
      */
     bindFactory<T>(type: Type, factory: IFactory<T>) {
-        this.bindings[type as any] = {
+        this.bindings[type] = {
             bindingType: InjectionBindingType.factory,
             value: factory,
         };
