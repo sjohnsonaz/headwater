@@ -1,1 +1,1 @@
-export { Request, Mediator, IRequestHandler } from './Mediator';
+export { Request, Mediator, RequestHandler } from './Mediator';

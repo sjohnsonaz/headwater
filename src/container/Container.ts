@@ -1,8 +1,8 @@
 export type Type = string | number | symbol;
 
-export type IConstructor<T> = new (...args: any) => T;
+export type Constructor<T> = new (...args: any) => T;
 
-export type IFactory<T> = (...args: any) => T;
+export type Factory<T> = (...args: any) => T;
 
 export enum BindingType {
     value = 'value',
@@ -12,12 +12,12 @@ export enum BindingType {
 
 export type ConstructorBinding<T> = {
     type: BindingType.constructor | `${BindingType.constructor}`;
-    value: IConstructor<T>;
+    value: Constructor<T>;
 };
 
 export type FactoryBinding<T> = {
     type: BindingType.factory | `${BindingType.factory}`;
-    value: IFactory<T>;
+    value: Factory<T>;
 };
 
 export type ValueBinding<T> = {
@@ -86,7 +86,7 @@ export class Container<
      * @param type - a Type to bind
      * @param constructor - a constructor to bind
      */
-    bindConstructor<TKey extends keyof T, TConstructor extends IConstructor<InjectionType<T[TKey]>>>(
+    bindConstructor<TKey extends keyof T, TConstructor extends Constructor<InjectionType<T[TKey]>>>(
         type: TKey,
         constructor: TConstructor,
     ) {
@@ -101,10 +101,7 @@ export class Container<
      * @param type - a Type to bind
      * @param factory - a factory to bind
      */
-    bindFactory<TKey extends keyof T, TFactory extends IFactory<InjectionType<T[TKey]>>>(
-        type: TKey,
-        factory: TFactory,
-    ) {
+    bindFactory<TKey extends keyof T, TFactory extends Factory<InjectionType<T[TKey]>>>(type: TKey, factory: TFactory) {
         this.bindings[type] = {
             type: BindingType.factory,
             value: factory,
