@@ -59,6 +59,110 @@ describe('Mediator', function () {
         });
     });
 
+    describe('add', function () {
+        class TestRequest extends Request<string> {}
+
+        it('should add a handler', function () {
+            const mediator = new Mediator();
+            expect(Object.keys(mediator.handlers).length).toBe(0);
+            const handler = async function () {
+                return '';
+            };
+            mediator.add({
+                type: TestRequest,
+                handler,
+            });
+
+            expect(Object.keys(mediator.handlers).length).toBe(1);
+            expect(mediator.handlers[TestRequest.name]).toBe(handler);
+        });
+
+        it('should replace a handler', function () {
+            const mediator = new Mediator();
+            const handlerA = async function () {
+                return '';
+            };
+            const handlerB = async function () {
+                return '';
+            };
+            mediator.add({
+                type: TestRequest,
+                handler: handlerA,
+            });
+            expect(mediator.handlers[TestRequest.name]).toBe(handlerA);
+            mediator.add({
+                type: TestRequest,
+                handler: handlerB,
+            });
+            expect(mediator.handlers[TestRequest.name]).toBe(handlerB);
+        });
+
+        it('should add a validator', function () {
+            const mediator = new Mediator();
+            expect(Object.keys(mediator.handlers).length).toBe(0);
+            const handler = async function () {
+                return '';
+            };
+            const validator = async function () {
+                return true;
+            };
+            mediator.add({
+                type: TestRequest,
+                handler,
+                validator,
+            });
+
+            expect(Object.keys(mediator.validators).length).toBe(1);
+            expect(mediator.validators[TestRequest.name]).toBe(validator);
+        });
+
+        it('should replace a validator', function () {
+            const mediator = new Mediator();
+            const handler = async function () {
+                return '';
+            };
+            const validatorA = async function () {
+                return true;
+            };
+            const validatorB = async function () {
+                return true;
+            };
+            mediator.add({
+                type: TestRequest,
+                handler,
+                validator: validatorA,
+            });
+            expect(mediator.validators[TestRequest.name]).toBe(validatorA);
+            mediator.add({
+                type: TestRequest,
+                handler,
+                validator: validatorB,
+            });
+            expect(mediator.validators[TestRequest.name]).toBe(validatorB);
+        });
+
+        it('should remove a validator', function () {
+            const mediator = new Mediator();
+            const handler = async function () {
+                return '';
+            };
+            const validator = async function () {
+                return true;
+            };
+            mediator.add({
+                type: TestRequest,
+                handler,
+                validator,
+            });
+            expect(mediator.validators[TestRequest.name]).toBe(validator);
+            mediator.add({
+                type: TestRequest,
+                handler,
+            });
+            expect(mediator.validators[TestRequest.name]).toBeUndefined();
+        });
+    });
+
     describe('send', function () {
         class TestRequest extends Request<string> {}
 

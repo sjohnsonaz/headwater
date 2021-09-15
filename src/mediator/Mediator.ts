@@ -46,6 +46,32 @@ export class Mediator {
     }
 
     /**
+     * Registers a Handler and a Validator
+     * @param requestCtr - a constructor for a Request
+     * @param handler - a handler for a Request
+     */
+    add<T extends Request<any>>({
+        type,
+        handler,
+        validator,
+    }: {
+        type: Constructor<T>;
+        handler: RequestHandler<T>;
+        validator?: RequestValidator<T>;
+    }) {
+        const name = type.name;
+        this.handlers[name] = handler;
+        if (validator) {
+            this.validators[name] = validator;
+        } else {
+            // Keep the keys packed
+            if (this.validators[name]) {
+                delete this.validators[name];
+            }
+        }
+    }
+
+    /**
      * Sends a Request to a registered Handler
      * @param request - a Request object
      */
