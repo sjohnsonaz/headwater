@@ -6,11 +6,13 @@ docs/
 
 # Source directory
 # src/
+examples/
 
 # Build directory
 dist/bundle/
 dist/tests/
 dist/mocha/
+dist-examples/
 coverage/
 
 # Sourcemap, log, packed files
@@ -30,7 +32,9 @@ webpack.dev.config.js
 nodemon.json
 
 # Editor configuration files
+.github/
 .vscode/
+.prettierrc
 
 # MkDocs files
 mkdocs.yml

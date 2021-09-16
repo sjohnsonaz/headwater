@@ -9,6 +9,7 @@ node_modules/
 
 # Build directory
 dist/
+dist-examples/
 coverage/
 
 # Sourcemap, log, packed files

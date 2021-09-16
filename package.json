@@ -14,7 +14,8 @@
     "clean": "rimraf ./dist",
     "prepublishOnly": "rimraf ./dist && tsc --declaration",
     "test": "jest --verbose --coverage",
-    "node": "node ./dist/index.js"
+    "node": "node ./dist/index.js",
+    "examples": "tsc --project examples/tsconfig.json && node ./dist-examples/main.js"
   },
   "devDependencies": {
     "@types/jest": "26.0.14",
