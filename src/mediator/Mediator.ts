@@ -20,7 +20,9 @@ type Constructor<T> = new (...args: any) => T;
  * Requests are dispatched to registered Request Handlers.
  */
 export class Mediator {
-    constructor({ requireValidation = false }: { requireValidation?: boolean } = {}) {
+    constructor({
+        requireValidation = false,
+    }: { requireValidation?: boolean } = {}) {
         this.requireValidation = requireValidation;
     }
     handlers: Record<string, RequestHandler<any>> = {};
@@ -32,7 +34,10 @@ export class Mediator {
      * @param requestCtr - a constructor for a Request
      * @param handler - a handler for a Request
      */
-    addHandler<T extends Request<any>>(requestCtr: Constructor<T>, handler: RequestHandler<T>) {
+    addHandler<T extends Request<any>>(
+        requestCtr: Constructor<T>,
+        handler: RequestHandler<T>,
+    ) {
         this.handlers[requestCtr.name] = handler;
     }
 
@@ -41,7 +46,10 @@ export class Mediator {
      * @param requestCtr - a constructor for a Request
      * @param validator - a handler for a Request
      */
-    addValidator<T extends Request<any>>(requestCtr: Constructor<T>, validator: RequestValidator<T>) {
+    addValidator<T extends Request<any>>(
+        requestCtr: Constructor<T>,
+        validator: RequestValidator<T>,
+    ) {
         this.validators[requestCtr.name] = validator;
     }
 
@@ -75,7 +83,9 @@ export class Mediator {
      * Sends a Request to a registered Handler
      * @param request - a Request object
      */
-    async send<T extends Request<any>>(request: T): Promise<RequestResponse<T>> {
+    async send<T extends Request<any>>(
+        request: T,
+    ): Promise<RequestResponse<T>> {
         const { name } = request.constructor;
         const validator = this.validators[name];
         if (validator) {

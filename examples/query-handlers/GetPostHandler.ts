@@ -1,12 +1,16 @@
 import { inject, Mediator } from '../../dist';
 
 import { Types } from '../application';
-import { GetPost } from '../queries';
+import { GetPostQuery } from '../queries';
 
 export const GetPostHandler = (mediator: Mediator) =>
-    mediator.add({
-        type: GetPost,
-        handler: async ({ id }, postDataAccess = inject(Types.PostDataAccess)) => {
-            return await postDataAccess.getPost(id);
+    mediator.addHandler(
+        GetPostQuery,
+        async ({ id }, postDataAccess = inject(Types.PostDataAccess)) => {
+            const post = await postDataAccess.getPost(id);
+            if (!post) {
+                throw new Error('no post');
+            }
+            return post;
         },
-    });
+    );

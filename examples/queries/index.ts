@@ -1,1 +1,1 @@
-export * from './GetPost';
+export * from './GetPostQuery';

@@ -25,7 +25,10 @@ export type ValueBinding<T> = {
     value: T;
 };
 
-export type InjectionBinding<T> = ConstructorBinding<T> | FactoryBinding<T> | ValueBinding<T>;
+export type InjectionBinding<T> =
+    | ConstructorBinding<T>
+    | FactoryBinding<T>
+    | ValueBinding<T>;
 
 export type InjectionType<T> = T extends ConstructorBinding<infer U>
     ? U
@@ -35,13 +38,14 @@ export type InjectionType<T> = T extends ConstructorBinding<infer U>
     ? U
     : never;
 
-export type InjectionParams<T extends InjectionBinding<any>> = T extends ConstructorBinding<any>
-    ? ConstructorParameters<T['value']>
-    : T extends FactoryBinding<any>
-    ? Parameters<T['value']>
-    : T extends ValueBinding<any>
-    ? never
-    : never;
+export type InjectionParams<T extends InjectionBinding<any>> =
+    T extends ConstructorBinding<any>
+        ? ConstructorParameters<T['value']>
+        : T extends FactoryBinding<any>
+        ? Parameters<T['value']>
+        : T extends ValueBinding<any>
+        ? never
+        : never;
 
 export type InjectionValue<T extends InjectionBinding<any>> = T['value'];
 
@@ -74,7 +78,10 @@ export class Container<
      * @param type - a Type to bind
      * @param value - a value to bind
      */
-    bindValue<TKey extends keyof T, TValue extends InjectionType<T[TKey]>>(type: TKey, value: TValue) {
+    bindValue<TKey extends keyof T, TValue extends InjectionType<T[TKey]>>(
+        type: TKey,
+        value: TValue,
+    ) {
         this.bindings[type] = {
             type: BindingType.value,
             value,
@@ -86,10 +93,10 @@ export class Container<
      * @param type - a Type to bind
      * @param constructor - a constructor to bind
      */
-    bindConstructor<TKey extends keyof T, TConstructor extends Constructor<InjectionType<T[TKey]>>>(
-        type: TKey,
-        constructor: TConstructor,
-    ) {
+    bindConstructor<
+        TKey extends keyof T,
+        TConstructor extends Constructor<InjectionType<T[TKey]>>,
+    >(type: TKey, constructor: TConstructor) {
         this.bindings[type] = {
             type: BindingType.constructor,
             value: constructor,
@@ -101,7 +108,10 @@ export class Container<
      * @param type - a Type to bind
      * @param factory - a factory to bind
      */
-    bindFactory<TKey extends keyof T, TFactory extends Factory<InjectionType<T[TKey]>>>(type: TKey, factory: TFactory) {
+    bindFactory<
+        TKey extends keyof T,
+        TFactory extends Factory<InjectionType<T[TKey]>>,
+    >(type: TKey, factory: TFactory) {
         this.bindings[type] = {
             type: BindingType.factory,
             value: factory,
@@ -122,7 +132,10 @@ export class Container<
      * @param type - a bound Type
      * @param args - zero or more args to pass if the bound value is a function or constructor
      */
-    get<TKey extends keyof T>(type: TKey, ...args: InjectionParams<T[TKey]>): InjectionType<T[TKey]> {
+    get<TKey extends keyof T>(
+        type: TKey,
+        ...args: InjectionParams<T[TKey]>
+    ): InjectionType<T[TKey]> {
         let binding = this.bindings[type];
         if (!binding) {
             throw `No binding associated with: ${type.toString()}`;
@@ -162,7 +175,9 @@ export class Container<
      * Sets the default Container
      * @param container - a Container object
      */
-    static setDefault<TContainer extends Container<DefaultBindings>>(container: TContainer) {
+    static setDefault<TContainer extends Container<DefaultBindings>>(
+        container: TContainer,
+    ) {
         Container.default = container;
     }
 }
@@ -176,7 +191,10 @@ export class Container<
  * @param container - a Container to use
  * @param args - zero or more args to pass if the bound value is a function or constructor
  */
-export function inject<TContainer extends Container, TKey extends keyof TContainer['bindings']>(
+export function inject<
+    TContainer extends Container,
+    TKey extends keyof TContainer['bindings'],
+>(
     container: TContainer,
     type: TKey,
     ...args: InjectionParams<TContainer['bindings'][TKey]>
