@@ -14,14 +14,12 @@ export type ConstructorBinding<T> = {
     type: BindingType.constructor | `${BindingType.constructor}`;
     value: Constructor<T>;
     singleton?: boolean;
-    instance?: T;
 };
 
 export type FactoryBinding<T> = {
     type: BindingType.factory | `${BindingType.factory}`;
     value: Factory<T>;
     singleton?: boolean;
-    instance?: T;
 };
 
 export type ValueBinding<T> = {
@@ -72,6 +70,7 @@ export class Container<
     },
 > {
     bindings: T = {} as any;
+    protected instances: Record<keyof T, any> = {} as any;
 
     constructor(bindings: T = {} as any) {
         this.bindings = bindings;
@@ -151,12 +150,13 @@ export class Container<
             case BindingType.constructor:
             case 'constructor':
                 if (binding.singleton) {
-                    if (binding.instance) {
-                        return binding.instance;
+                    const instance = this.instances[type];
+                    if (instance) {
+                        return instance;
                     } else {
                         // @ts-ignore TODO: Fix this
                         const instance = new value(...args);
-                        binding.instance = instance;
+                        this.instances[type] = instance;
                         return instance;
                     }
                 } else {
@@ -166,12 +166,14 @@ export class Container<
             case BindingType.factory:
             case 'factory':
                 if (binding.singleton) {
-                    if (binding.instance) {
-                        return binding.instance;
+                    const instance = this.instances[type];
+                    if (instance) {
+                        return instance;
                     } else {
                         // @ts-ignore TODO: Fix this
-                        binding.instance = value(...args);
-                        return binding.instance;
+                        const instance = value(...args);
+                        this.instances[type] = instance;
+                        return instance;
                     }
                 } else {
                     // @ts-ignore TODO: Fix this
