@@ -13,11 +13,15 @@ export enum BindingType {
 export type ConstructorBinding<T> = {
     type: BindingType.constructor | `${BindingType.constructor}`;
     value: Constructor<T>;
+    singleton?: boolean;
+    instance?: T;
 };
 
 export type FactoryBinding<T> = {
     type: BindingType.factory | `${BindingType.factory}`;
     value: Factory<T>;
+    singleton?: boolean;
+    instance?: T;
 };
 
 export type ValueBinding<T> = {
@@ -96,10 +100,11 @@ export class Container<
     bindConstructor<
         TKey extends keyof T,
         TConstructor extends Constructor<InjectionType<T[TKey]>>,
-    >(type: TKey, constructor: TConstructor) {
+    >(type: TKey, constructor: TConstructor, singleton?: boolean) {
         this.bindings[type] = {
             type: BindingType.constructor,
             value: constructor,
+            singleton,
         } as any;
     }
 
@@ -111,10 +116,11 @@ export class Container<
     bindFactory<
         TKey extends keyof T,
         TFactory extends Factory<InjectionType<T[TKey]>>,
-    >(type: TKey, factory: TFactory) {
+    >(type: TKey, factory: TFactory, singleton?: boolean) {
         this.bindings[type] = {
             type: BindingType.factory,
             value: factory,
+            singleton,
         } as any;
     }
 
@@ -144,12 +150,33 @@ export class Container<
         switch (binding.type) {
             case BindingType.constructor:
             case 'constructor':
-                // @ts-ignore TODO: Fix this
-                return new value(...args);
+                if (binding.singleton) {
+                    if (binding.instance) {
+                        return binding.instance;
+                    } else {
+                        // @ts-ignore TODO: Fix this
+                        const instance = new value(...args);
+                        binding.instance = instance;
+                        return instance;
+                    }
+                } else {
+                    // @ts-ignore TODO: Fix this
+                    return new value(...args);
+                }
             case BindingType.factory:
             case 'factory':
-                // @ts-ignore TODO: Fix this
-                return value(...args);
+                if (binding.singleton) {
+                    if (binding.instance) {
+                        return binding.instance;
+                    } else {
+                        // @ts-ignore TODO: Fix this
+                        binding.instance = value(...args);
+                        return binding.instance;
+                    }
+                } else {
+                    // @ts-ignore TODO: Fix this
+                    return value(...args);
+                }
             case BindingType.value:
             case 'value':
             default:
