@@ -163,6 +163,33 @@ describe('Mediator', function () {
         });
     });
 
+    describe('addListener', function () {
+        class TestRequest extends Request<string> {}
+
+        it('shoud add a listener', function () {
+            const mediator = new Mediator();
+            const listener = async function () {};
+            mediator.addListener(TestRequest, listener);
+
+            expect(mediator.listeners[TestRequest.name]).toStrictEqual([
+                listener,
+            ]);
+        });
+    });
+
+    describe('removeListener', function () {
+        class TestRequest extends Request<string> {}
+
+        it('should remove a listener', function () {
+            const mediator = new Mediator();
+            const listener = async function () {};
+            mediator.addListener(TestRequest, listener);
+            mediator.removeListener(TestRequest, listener);
+
+            expect(mediator.listeners[TestRequest.name]).toBeUndefined();
+        });
+    });
+
     describe('send', function () {
         class TestRequest extends Request<string> {}
 
@@ -244,6 +271,29 @@ describe('Mediator', function () {
                 error = e;
             }
             expect(error).toBeDefined();
+        });
+
+        it('should send result to listeners', function (done) {
+            const mediator = new Mediator();
+            mediator.addHandler(TestRequest, async () => {
+                return 'a';
+            });
+            mediator.addListener(TestRequest, async (request, result) => {
+                expect(result).toBe('a');
+                done();
+            });
+            mediator.send(new TestRequest());
+        });
+
+        it('should wait for listeners to complete', async function () {
+            const mediator = new Mediator();
+            mediator.addHandler(TestRequest, async () => {
+                return 'a';
+            });
+            mediator.addListener(TestRequest, async (request, result) => {
+                expect(result).toBe('a');
+            });
+            await mediator.send(new TestRequest(), true);
         });
     });
 });

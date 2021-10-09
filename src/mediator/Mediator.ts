@@ -12,6 +12,10 @@ export interface RequestValidator<T extends Request<any>> {
     (request: T): Promise<boolean>;
 }
 
+export interface RequestListener<T extends Request<any>> {
+    (request: T, result: RequestResponse<T>): Promise<void>;
+}
+
 type Constructor<T> = new (...args: any) => T;
 
 /**
@@ -27,6 +31,7 @@ export class Mediator {
     }
     handlers: Record<string, RequestHandler<any>> = {};
     validators: Record<string, RequestValidator<any>> = {};
+    listeners: Record<string, RequestListener<any>[]> = {};
     requireValidation: boolean;
 
     /**
@@ -79,12 +84,39 @@ export class Mediator {
         }
     }
 
+    addListener<T extends Request<any>>(
+        requestCtr: Constructor<T>,
+        listener: RequestListener<T>,
+    ) {
+        if (!this.listeners[requestCtr.name]) {
+            this.listeners[requestCtr.name] = [];
+        }
+        this.listeners[requestCtr.name].push(listener);
+    }
+
+    removeListener<T extends Request<any>>(
+        requestCtr: Constructor<T>,
+        listener: RequestListener<T>,
+    ) {
+        if (!this.listeners[requestCtr.name]) {
+            this.listeners[requestCtr.name] = [];
+        }
+        const index = this.listeners[requestCtr.name].indexOf(listener);
+        if (index >= 0) {
+            this.listeners[requestCtr.name].splice(index, 1);
+            if (!this.listeners[requestCtr.name].length) {
+                delete this.listeners[requestCtr.name];
+            }
+        }
+    }
+
     /**
      * Sends a Request to a registered Handler
      * @param request - a Request object
      */
     async send<T extends Request<any>>(
         request: T,
+        wait?: boolean,
     ): Promise<RequestResponse<T>> {
         const { name } = request.constructor;
         const validator = this.validators[name];
@@ -100,6 +132,17 @@ export class Mediator {
         if (!handler) {
             throw `no handler found for ${name}`;
         }
-        return handler(request);
+        const result = await handler(request);
+        const listeners = this.listeners[name];
+        if (listeners && listeners.length) {
+            if (wait) {
+                await Promise.all(
+                    listeners.map((listener) => listener(request, result)),
+                );
+            } else {
+                listeners.forEach((listener) => listener(request, result));
+            }
+        }
+        return result;
     }
 }
