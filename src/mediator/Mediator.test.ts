@@ -190,6 +190,33 @@ describe('Mediator', function () {
         });
     });
 
+    describe('addLogger', function () {
+        class TestRequest extends Request<string> {}
+
+        it('shoud add a logger', function () {
+            const mediator = new Mediator();
+            const logger = async function () {};
+
+            expect(mediator.loggers.length).toBe(0);
+
+            mediator.addLogger(logger);
+
+            expect(mediator.loggers.length).toBe(1);
+        });
+    });
+
+    describe('removeLogger', function () {
+        it('should remove a logger', function () {
+            const mediator = new Mediator();
+            const logger = async function () {};
+
+            mediator.addLogger(logger);
+            mediator.removeLogger(logger);
+
+            expect(mediator.loggers.length).toBe(0);
+        });
+    });
+
     describe('send', function () {
         class TestRequest extends Request<string> {}
 
